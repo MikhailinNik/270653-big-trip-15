@@ -1,34 +1,34 @@
-import { createEmptyList } from './view/waypoint.js';
-import { createTripInfo } from './view/trip-info.js';
-import { createSiteMenu } from './view/menu.js';
-import { createFilter } from './view/filter.js';
-import { createSort } from './view/sort.js';
-import { createForm } from './view/form-edit.js';
+import { createList } from '@view/point-list';
+import { createTripInfo } from '@view/trip-info';
+import { createSiteMenu } from '@view/menu';
+import { createFilter } from '@view/filter';
+import { createSort } from '@view/sort';
+import { createForm } from '@view/form-edit';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteMainElement = document.querySelector('.page-main');
-const siteSectionElement = siteMainElement.querySelector('.trip-events');
+const siteMainContainer = document.querySelector('.page-main');
+const siteSectionContainer = siteMainContainer.querySelector('.trip-events');
 
-render(siteSectionElement, createEmptyList(), 'afterbegin');
-render(siteSectionElement, createForm(), 'afterbegin');
-render(siteSectionElement, createSort(), 'afterbegin');
-
-
-const siteHeaderElement = document.querySelector('.page-header');
-const siteContainerElement = siteHeaderElement.querySelector('.trip-main');
-
-render(siteContainerElement, createTripInfo(), 'afterbegin');
+render(siteSectionContainer, createList(), 'afterbegin');
+render(siteSectionContainer, createForm(), 'afterbegin');
+render(siteSectionContainer, createSort(), 'afterbegin');
 
 
-const siteMenuElement = siteHeaderElement.querySelector('.trip-controls__navigation');
+const siteHeaderContainer = document.querySelector('.page-header');
+const siteContainerContainer = siteHeaderContainer.querySelector('.trip-main');
+
+render(siteContainerContainer, createTripInfo(), 'afterbegin');
+
+
+const siteMenuElement = siteHeaderContainer.querySelector('.trip-controls__navigation');
 
 render(siteMenuElement, createSiteMenu(), 'beforeend');
 
 
-const siteFilterElement = siteHeaderElement.querySelector('.trip-controls__filters');
+const siteFilterElement = siteHeaderContainer.querySelector('.trip-controls__filters');
 
 render(siteFilterElement, createFilter(), 'afterbegin');
 
