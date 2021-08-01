@@ -20,6 +20,8 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@view': path.resolve(__dirname, 'src/view'),
+      '@mock': path.resolve(__dirname, 'src/mock'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
     }
   }
 };

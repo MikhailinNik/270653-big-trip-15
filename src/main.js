@@ -4,6 +4,9 @@ import { createSiteMenu } from '@view/menu';
 import { createFilter } from '@view/filter';
 import { createSort } from '@view/sort';
 import { createForm } from '@view/form-edit';
+import { generatePoint } from '@mock/task-waypoint';
+
+console.log(generatePoint());
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -12,15 +15,16 @@ const render = (container, template, place) => {
 const siteMainContainer = document.querySelector('.page-main');
 const siteSectionContainer = siteMainContainer.querySelector('.trip-events');
 
-render(siteSectionContainer, createList(), 'afterbegin');
+render(siteSectionContainer, createList(), 'beforeend');
+
 render(siteSectionContainer, createForm(), 'afterbegin');
 render(siteSectionContainer, createSort(), 'afterbegin');
 
 
 const siteHeaderContainer = document.querySelector('.page-header');
-const siteContainerContainer = siteHeaderContainer.querySelector('.trip-main');
+const siteContainer = siteHeaderContainer.querySelector('.trip-main');
 
-render(siteContainerContainer, createTripInfo(), 'afterbegin');
+render(siteContainer, createTripInfo(), 'afterbegin');
 
 
 const siteMenuElement = siteHeaderContainer.querySelector('.trip-controls__navigation');
