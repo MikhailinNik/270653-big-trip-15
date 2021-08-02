@@ -44,6 +44,9 @@ const OPTIONS = [
   'Add breakfast',
   'Book tickets',
   'Lunch in city',
+  'Travel by train',
+  'Add meal',
+  'Choose seats',
 ];
 
 export {

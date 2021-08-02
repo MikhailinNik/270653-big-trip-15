@@ -1,4 +1,4 @@
-import { form  } from '@mock/task-waypoint';
+import { form  } from '@mock/data';
 import { createOfferContainer } from '@view/form-offer';
 
 const OFFER_COUNT = 5;
@@ -12,7 +12,11 @@ export const createForm = () => {
 
     adverts.forEach((advert) => container.push(advert));
 
-    return container.join(' ');
+    const containerSet = new Set(container);
+    console.log(Array.from(containerSet));
+
+
+    return Array.from(containerSet);
   };
 
   return (
@@ -120,6 +124,7 @@ export const createForm = () => {
 
           <div class="event__available-offers">
             ${addOffer()}
+          
           </div>
         </section>
 

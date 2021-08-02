@@ -1,6 +1,6 @@
 import { createPoint } from '@view/waypoint';
 import { createForm } from '@view/form-edit';
-import { generatePoint } from '@mock/task-waypoint';
+import { generatePoint } from '@mock/data';
 
 const POINT_COUNT = 15;
 
@@ -13,12 +13,12 @@ const addPoint = () => {
     advert.push(createPoint(adverts[i]));
   }
 
-  return advert;
+  return advert.join('');
 };
 
 export const createList = () => (
   `<ul class="trip-events__list">
       ${createForm()}
-      ${addPoint().join('')}
+      ${addPoint()}
   </ul>`
 );

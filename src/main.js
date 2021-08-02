@@ -3,7 +3,7 @@ import { createTripInfo } from '@view/trip-info';
 import { createSiteMenu } from '@view/menu';
 import { createFilter } from '@view/filter';
 import { createSort } from '@view/sort';
-import { generatePoint } from '@mock/task-waypoint';
+import { generatePoint } from '@mock/data';
 
 console.log(generatePoint());
 

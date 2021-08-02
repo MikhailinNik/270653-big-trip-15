@@ -3,7 +3,7 @@ import { getRandomInteger } from '@utils/util';
 import * as dayjs from 'dayjs';
 
 
-const generateType = (adverts) => {
+const generateAdvert = (adverts) => {
   const randomIndex = getRandomInteger(0, adverts.length - 1);
   return adverts[randomIndex];
 };
@@ -53,7 +53,7 @@ const getRandomArrayLength = (value, adverts) => {
   const count = getRandomInteger(1, value);
 
   for (let i = 0; i < count; i++) {
-    const result = generateType(adverts);
+    const result = generateAdvert(adverts);
     container.push(result);
   }
 
@@ -74,17 +74,18 @@ const getPhotoContainer = () => {
 const generateForm = () => ({
   descriptions: getRandomArrayLength(5, DESCRIPTIONS),
   photos: getPhotoContainer(),
-  offer: getRandomArrayLength(1, OPTIONS),
+  offers: OPTIONS,
+  isChecked: Boolean(getRandomInteger(0, 1)),
 });
 const form = generateForm();
 console.log(generateForm());
 
 export const generatePoint = () => {
-  const eventType = generateType(TYPES);
+  const eventType = generateAdvert(TYPES);
 
   return {
     type: eventType,
-    town: generateType(TOWNS),
+    town: generateAdvert(TOWNS),
     date: generateDate(),
     icon: getIcon(eventType),
     dateTo: generateDate(),
@@ -100,6 +101,7 @@ export const generatePoint = () => {
 
 
 export {
+  generateAdvert,
   getPrice,
   form
 };
