@@ -3,7 +3,6 @@ import { createTripInfo } from '@view/trip-info';
 import { createSiteMenu } from '@view/menu';
 import { createFilter } from '@view/filter';
 import { createSort } from '@view/sort';
-import { createForm } from '@view/form-edit';
 import { generatePoint } from '@mock/task-waypoint';
 
 console.log(generatePoint());
@@ -16,8 +15,6 @@ const siteMainContainer = document.querySelector('.page-main');
 const siteSectionContainer = siteMainContainer.querySelector('.trip-events');
 
 render(siteSectionContainer, createList(), 'beforeend');
-
-render(siteSectionContainer, createForm(), 'afterbegin');
 render(siteSectionContainer, createSort(), 'afterbegin');
 
 

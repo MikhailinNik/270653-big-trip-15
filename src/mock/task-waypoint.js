@@ -1,10 +1,11 @@
-import { TYPES, TOWNS, DESCRIPTIONS } from '@utils/const.js';
-import { getRandomInteger } from '@utils/util.js';
+import { TYPES, TOWNS, DESCRIPTIONS, OPTIONS, PLUG } from '@utils/const';
+import { getRandomInteger } from '@utils/util';
 import * as dayjs from 'dayjs';
 
-const generateType = (advert) => {
-  const randomIndex = getRandomInteger(0, advert.length - 1);
-  return advert[randomIndex];
+
+const generateType = (adverts) => {
+  const randomIndex = getRandomInteger(0, adverts.length - 1);
+  return adverts[randomIndex];
 };
 
 const getIcon = (eventType) => {
@@ -25,40 +26,80 @@ const generateDate = () => {
 
   return dayjs().add(daysGap, 'day').toDate();
 };
-console.log(generateDate());
+
+/*
+const generateDateTime = () => {
+  const isDate = Boolean(getRandomInteger(0, 1));
+
+  if (!isDate) {
+    return null;
+  }
+
+  const maxDaysGap = 3600;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+
+  return dayjs().add(daysGap, 'h').toDate();
+};
+*/
 const getPrice = () => {
   const value = getRandomInteger(1, 100);
 
   return value;
 };
 
-const getDescriptionText = () => {
-  const descriptionContainer = [];
+
+const getRandomArrayLength = (value, adverts) => {
+  const container = [];
+  const count = getRandomInteger(1, value);
+
+  for (let i = 0; i < count; i++) {
+    const result = generateType(adverts);
+    container.push(result);
+  }
+
+  return container;
+};
+
+const getPhotoContainer = () => {
+  const container = [];
   const count = getRandomInteger(1, 5);
 
   for (let i = 0; i < count; i++) {
-    const result = generateType(DESCRIPTIONS);
-    descriptionContainer.push(result);
+    const advert = `http://picsum.photos/248/152?r=${Math.random(10)}`;
+    container.push(advert);
   }
-
-  return descriptionContainer;
+  return container.join('   ');
 };
+
+const generateForm = () => ({
+  descriptions: getRandomArrayLength(5, DESCRIPTIONS),
+  photos: getPhotoContainer(),
+  offer: getRandomArrayLength(1, OPTIONS),
+});
+const form = generateForm();
+console.log(generateForm());
 
 export const generatePoint = () => {
   const eventType = generateType(TYPES);
-  const date = generateDate();
-  const time = generateDate();
 
   return {
     type: eventType,
     town: generateType(TOWNS),
-    date,
+    date: generateDate(),
     icon: getIcon(eventType),
-    time,
+    dateTo: generateDate(),
+    dateFrom: generateDate(),
     price: getPrice(),
-    descrtiption: getDescriptionText(),
+    // добавить offerPrice в offer, чтобы была другая сумма
+    offerPrice: getPrice(),
+    offers: getRandomArrayLength(2, OPTIONS),
+    isFavourite: Boolean(getRandomInteger(0, 1)),
 
   };
 };
 
 
+export {
+  getPrice,
+  form
+};

@@ -1,3 +1,10 @@
+const DISABLED = 'disabled';
+const ACTIVE = 'active';
+
+const PLUG = 'http://picsum.photos/248/152?r=случайное_число';
+
+// const dateFormat
+
 const TYPES = [
   'Taxi',
   'Bus',
@@ -29,8 +36,22 @@ const DESCRIPTIONS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
+const OPTIONS = [
+  'Order Uber',
+  'Add luggage',
+  'Switch to comfort',
+  'Rent a car ',
+  'Add breakfast',
+  'Book tickets',
+  'Lunch in city',
+];
+
 export {
   TYPES,
   TOWNS,
-  DESCRIPTIONS
+  DESCRIPTIONS,
+  OPTIONS,
+  DISABLED,
+  ACTIVE,
+  PLUG
 };
