@@ -1,107 +1,102 @@
-import { TYPES, TOWNS, DESCRIPTIONS, OPTIONS, PLUG } from '@utils/const';
-import { getRandomInteger } from '@utils/util';
-import * as dayjs from 'dayjs';
+const destinations = [
+  {
+    description: 'Moscow is the capital of Russian Federation',
+    name: 'Moscow',
+    pictures: [
+      {
+        src: './img/photos/1.jpg',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      },
+      {
+        src: './img/photos/2.jpg',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      },
+      {
+        src: './img/photos/3.jpg',
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      },
+    ],
+  },
+  {
+    description: 'Saint-Petersburg is the capital of model buisiness',
+    name: 'Saint-Petersburg',
+    pictures: [
+      {
+        src: './img/photos/2.jpg',
+        description: 'Cras aliquet varius magna.',
+      },
+    ],
+  },
+];
 
+const offers = [
+  {
+    type: 'taxi',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 100,
+      },
+    ],
+  },
 
-const generateAdvert = (adverts) => {
-  const randomIndex = getRandomInteger(0, adverts.length - 1);
-  return adverts[randomIndex];
-};
+  {
+    type: 'taxi',
+    offers: [
+      {
+        title: 'Upgrade to a business class',
+        price: 50,
+      },
+    ],
+  },
+];
 
-const getIcon = (eventType) => {
-  const letter = eventType.toLowerCase();
+const points = [
+  {
+    basePrice: 1100,
+    dateFrom: new Date('2019-07-10T22:55:56.845Z'),
+    dateTo: new Date('2019-07-11T04:55:56.845Z'),
+    destination: destinations[0],
+    id: '0',
+    isFavourite: true,
+    offers: [
+      {
+        title: 'Choose meal',
+        price: 180,
+      },
+      {
+        title: 'Upgarade to comfort class',
+        price: 50,
+      },
+    ],
 
-  return `img/icons/${letter}.png`;
-};
+    type: 'taxi',
+  },
+  {
+    basePrice: 900,
+    dateFrom: new Date('2019-07-10T22:55:56.845Z'),
+    dateTo: new Date('2019-07-11T04:55:56.845Z'),
+    destination: destinations[1],
+    id: '1',
+    isFavourite: false,
+    offers: [
+      {
+        title: 'Order Uber',
+        price: 30,
+      },
+      {
+        title: 'Add meal',
+        price: 50,
+      },
+    ],
 
-const generateDate = () => {
-  const isDate = Boolean(getRandomInteger(0, 1));
-
-  if (!isDate) {
-    return null;
-  }
-
-  const maxDaysGap = 7;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-
-  return dayjs().add(daysGap, 'day').toDate();
-};
-
-/*
-const generateDateTime = () => {
-  const isDate = Boolean(getRandomInteger(0, 1));
-
-  if (!isDate) {
-    return null;
-  }
-
-  const maxDaysGap = 3600;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-
-  return dayjs().add(daysGap, 'h').toDate();
-};
-*/
-const getPrice = () => {
-  const value = getRandomInteger(1, 100);
-
-  return value;
-};
-
-
-const getRandomArrayLength = (value, adverts) => {
-  const container = [];
-  const count = getRandomInteger(1, value);
-
-  for (let i = 0; i < count; i++) {
-    const result = generateAdvert(adverts);
-    container.push(result);
-  }
-
-  return container;
-};
-
-const getPhotoContainer = () => {
-  const container = [];
-  const count = getRandomInteger(1, 5);
-
-  for (let i = 0; i < count; i++) {
-    const advert = `http://picsum.photos/248/152?r=${Math.random(10)}`;
-    container.push(advert);
-  }
-  return container.join('   ');
-};
-
-const generateForm = () => ({
-  descriptions: getRandomArrayLength(5, DESCRIPTIONS),
-  photos: getPhotoContainer(),
-  offers: OPTIONS,
-  isChecked: Boolean(getRandomInteger(0, 1)),
-});
-const form = generateForm();
-console.log(generateForm());
-
-export const generatePoint = () => {
-  const eventType = generateAdvert(TYPES);
-
-  return {
-    type: eventType,
-    town: generateAdvert(TOWNS),
-    date: generateDate(),
-    icon: getIcon(eventType),
-    dateTo: generateDate(),
-    dateFrom: generateDate(),
-    price: getPrice(),
-    // добавить offerPrice в offer, чтобы была другая сумма
-    offerPrice: getPrice(),
-    offers: getRandomArrayLength(2, OPTIONS),
-    isFavourite: Boolean(getRandomInteger(0, 1)),
-
-  };
-};
+    type: 'taxi',
+  },
+];
 
 
 export {
-  generateAdvert,
-  getPrice,
-  form
+  destinations,
+  offers,
+  points
 };

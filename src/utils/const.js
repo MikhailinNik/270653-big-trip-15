@@ -1,11 +1,13 @@
-const DISABLED = 'disabled';
-const ACTIVE = 'active';
+import dayjs from 'dayjs';
 
-const PLUG = 'http://picsum.photos/248/152?r=случайное_число';
+const DATE_FORMAT = {
+  MONTH_DAY: 'MMM DD',
+  HOURS_MINUTE: 'HH:mm',
+};
 
-// const dateFormat
+const ZERO = '0';
 
-const TYPES = [
+const POINT_TYPES = [
   'Taxi',
   'Bus',
   'Train',
@@ -49,12 +51,32 @@ const OPTIONS = [
   'Choose seats',
 ];
 
+const createFormatForDate = (date, format) => dayjs(date).format(format);
+
+const capitalizeFirstLetter = (string) => string[0].toUpperCase() + string.slice(1);
+
+const getDate = (string) => new Date(0, 0, 0, string.split(':')[0], string.split(':')[1]);
+
+const getDurationTime = (dateTo, dateFrom) => {
+  const result = getDate(dateTo) - getDate(dateFrom);
+
+  const hours = ((result / 3600000));
+  const minutes = (((result % 86400000) % 3600000) / 60000);
+
+  const isHours = `${hours < 10 ? ZERO + hours : hours}`;
+  const isMinutes = `${minutes < 10 ? ZERO + minutes : minutes}`;
+
+  return `${isHours}:${isMinutes}`;
+};
+
 export {
-  TYPES,
+  POINT_TYPES,
   TOWNS,
   DESCRIPTIONS,
   OPTIONS,
-  DISABLED,
-  ACTIVE,
-  PLUG
+  DATE_FORMAT,
+  createFormatForDate,
+  capitalizeFirstLetter,
+  getDate,
+  getDurationTime
 };
