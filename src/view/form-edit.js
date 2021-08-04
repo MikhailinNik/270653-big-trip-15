@@ -1,6 +1,6 @@
 import { createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
-import { destinations } from '@mock/data1';
+import { destinations } from '@mock/data';
 
 
 export const createPointFormTemplate = (point) => {

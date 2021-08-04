@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+
 
 const DATE_FORMAT = {
   MONTH_DAY: 'MMM DD',
@@ -51,32 +51,11 @@ const OPTIONS = [
   'Choose seats',
 ];
 
-const createFormatForDate = (date, format) => dayjs(date).format(format);
-
-const capitalizeFirstLetter = (string) => string[0].toUpperCase() + string.slice(1);
-
-const getDate = (string) => new Date(0, 0, 0, string.split(':')[0], string.split(':')[1]);
-
-const getDurationTime = (dateTo, dateFrom) => {
-  const result = getDate(dateTo) - getDate(dateFrom);
-
-  const hours = ((result / 3600000));
-  const minutes = (((result % 86400000) % 3600000) / 60000);
-
-  const isHours = `${hours < 10 ? ZERO + hours : hours}`;
-  const isMinutes = `${minutes < 10 ? ZERO + minutes : minutes}`;
-
-  return `${isHours}:${isMinutes}`;
-};
-
 export {
   POINT_TYPES,
   TOWNS,
   DESCRIPTIONS,
   OPTIONS,
   DATE_FORMAT,
-  createFormatForDate,
-  capitalizeFirstLetter,
-  getDate,
-  getDurationTime
+  ZERO
 };

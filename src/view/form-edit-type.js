@@ -1,4 +1,5 @@
-import { POINT_TYPES, capitalizeFirstLetter } from '@utils/const';
+import { POINT_TYPES } from '@utils/const';
+import { capitalizeFirstLetter } from '@utils/util';
 
 export const createPointTypeTemplate = (currentType) => POINT_TYPES.map((type) => {
   const getFirstLetterUpper = () => currentType === ''

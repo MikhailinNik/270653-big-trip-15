@@ -1,4 +1,4 @@
-import { createTripInfo } from '@view/trip-info';
+import { createTripInfoTemplate } from '@view/trip-info';
 import { createSiteMenuTemplate } from '@view/menu';
 import { createFilterTemplate } from '@view/filter';
 import { createPointSortTemplate } from '@view/sort';
@@ -32,7 +32,7 @@ render(mainEvents, createPointSortTemplate(), 'afterbegin');
 const siteHeaderContainer = document.querySelector('.page-header');
 const siteContainer = siteHeaderContainer.querySelector('.trip-main');
 
-render(siteContainer, createTripInfo(), 'afterbegin');
+render(siteContainer, createTripInfoTemplate(), 'afterbegin');
 
 const controlsNavigation = siteHeaderContainer.querySelector('.trip-controls__navigation');
 

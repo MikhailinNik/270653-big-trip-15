@@ -1,4 +1,5 @@
-import { DATE_FORMAT, createFormatForDate, getDurationTime } from '@utils/const';
+import { DATE_FORMAT } from '@utils/const';
+import { createFormatForDate, getDurationTime } from '@utils/util';
 
 export const createWaypointTemplate = (point) => {
   const {

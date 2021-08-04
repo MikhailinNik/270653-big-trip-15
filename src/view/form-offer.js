@@ -1,4 +1,4 @@
-import { offers } from '@mock/data1';
+import { offers } from '@mock/data';
 
 export const createPointOfferTemplate = () => offers.map(({ offers }) => (
   `<div class="event__offer-selector">
