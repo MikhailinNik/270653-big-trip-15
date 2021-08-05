@@ -1,5 +1,5 @@
 import { DATE_FORMAT } from '@utils/const';
-import { createFormatForDate, getDurationTime } from '@utils/util';
+import { createFormatForDate, getDateFromMilliseconds, getDurationTime } from '@utils/util';
 
 export const createWaypointTemplate = (point) => {
   const {
@@ -12,15 +12,15 @@ export const createWaypointTemplate = (point) => {
     type,
   } = point;
 
-  const isBasePrice = basePrice === null
+  const eventPrice = basePrice === null
     ? ''
     : basePrice;
 
-  const isType = type === null
+  const eventType = type === null
     ? ''
     : type;
 
-  const isDateFrom = dateFrom === null
+  const eventDate = dateFrom === null
     ? ''
     : createFormatForDate(dateFrom, DATE_FORMAT.MONTH_DAY);
 
@@ -28,51 +28,57 @@ export const createWaypointTemplate = (point) => {
     ? ''
     : createFormatForDate(dateFrom, DATE_FORMAT.HOURS_MINUTE);
 
-  const secondDate = dateFrom === null
+  const secondDate = dateTo === null
     ? ''
     : createFormatForDate(dateTo, DATE_FORMAT.HOURS_MINUTE);
 
-
-  const duration = getDurationTime(secondDate, firstDate);
-
+  const millesecond = getDateFromMilliseconds(dateTo, dateFrom);
+  const durationHour = getDurationTime(millesecond, DATE_FORMAT.HOUR);
+  const durationMinute = getDurationTime(millesecond, DATE_FORMAT.MINUTE);
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">
-      ${isDateFrom}
+      <time class="event__date" datetime="${dateFrom.toISOString()}">
+      ${eventDate}
       </time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${isType}.png" alt="Event ${isType} icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event ${eventType} icon">
       </div>
       <h3 class="event__title">
-      ${isType} ${destination === null ? '' : destination.description}</h3>
+      ${eventType} ${destination === null || destination.name === null
+  ? ''
+  : destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">
+          <time class="event__start-time" datetime="${dateFrom.toISOString()}">
           ${firstDate}
           </time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">
+          <time class="event__end-time" datetime="${dateTo.toISOString()}">
           ${secondDate}
           </time>
         </p>
         <p class="event__duration">
-        ${duration}
-        M</p>
+        ${durationHour} H ${durationMinute} M
+        </p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${isBasePrice}</span>
+        &euro;&nbsp;<span class="event__price-value">${eventPrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
 
         ${offers.map(({ title, price }) => `<li class="event__offer">
         <span class="event__offer-title">
-          ${title === null ? '' : title}
+  ${title === null
+    ? ''
+    : title}
         </span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">
-          ${price === null ? '' : price}
+  ${price === null
+    ? ''
+    : price}
         </span>
       </li>`).join('')}
 

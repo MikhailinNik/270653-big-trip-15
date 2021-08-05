@@ -1,8 +1,8 @@
-
-
 const DATE_FORMAT = {
   MONTH_DAY: 'MMM DD',
   HOURS_MINUTE: 'HH:mm',
+  HOUR: 'HH',
+  MINUTE: 'mm',
 };
 
 const ZERO = '0';

@@ -29,7 +29,7 @@ const destinations = [
   },
 ];
 
-const offers = [
+const offersForm = [
   {
     type: 'taxi',
     offers: [
@@ -54,8 +54,8 @@ const offers = [
 const points = [
   {
     basePrice: 1100,
-    dateFrom: new Date('2019-07-10T22:55:56.845Z'),
-    dateTo: new Date('2019-07-11T04:55:56.845Z'),
+    dateFrom: new Date('2019-07-10T22:56:56.845Z'),
+    dateTo: new Date('2019-07-11T10:55:56.845Z'),
     destination: destinations[0],
     id: '0',
     isFavourite: true,
@@ -74,8 +74,8 @@ const points = [
   },
   {
     basePrice: 900,
-    dateFrom: new Date('2019-07-10T22:55:56.845Z'),
-    dateTo: new Date('2019-07-11T04:55:56.845Z'),
+    dateFrom: new Date('2019-07-10T10:20:56.845Z'),
+    dateTo: new Date('2019-07-11T04:15:56.845Z'),
     destination: destinations[1],
     id: '1',
     isFavourite: false,
@@ -97,6 +97,6 @@ const points = [
 
 export {
   destinations,
-  offers,
+  offersForm,
   points
 };
