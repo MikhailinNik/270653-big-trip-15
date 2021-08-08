@@ -1,10 +1,9 @@
+import { createItem } from '@utils/util';
 import { createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
-import { destinations } from '@mock/data';
 
-
-export const createPointFormTemplate = (point) => {
+export const createPointFormTemplate = (point, destinations, offersForm) => {
   const { type, destination, basePrice } = point;
 
   const eventType = type === null
@@ -64,13 +63,16 @@ export const createPointFormTemplate = (point) => {
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-    ${createPointOfferTemplate()}
+    ${createPointOfferTemplate(offersForm)}
           </div>
         </section>
 
@@ -83,3 +85,28 @@ export const createPointFormTemplate = (point) => {
     </form>
   </li>`);
 };
+
+export default class FormEdit {
+  constructor(point, destinations, offers) {
+    this._point = point;
+    this._destinations = destinations;
+    this._offers = offers;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointFormTemplate(this._point, this._destinations, this._offers);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createItem(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -5,7 +5,10 @@ const DATE_FORMAT = {
   MINUTE: 'mm',
 };
 
-const ZERO = '0';
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
 
 const POINT_TYPES = [
   'Taxi',
@@ -57,5 +60,5 @@ export {
   DESCRIPTIONS,
   OPTIONS,
   DATE_FORMAT,
-  ZERO
+  RenderPosition
 };

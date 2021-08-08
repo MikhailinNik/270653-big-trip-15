@@ -1,7 +1,7 @@
 import { DATE_FORMAT } from '@utils/const';
-import { createFormatForDate, getDateFromMilliseconds, getDurationTime } from '@utils/util';
+import { createFormatForDate, getDateFromMilliseconds, getDurationTime, createItem } from '@utils/util';
 
-export const createWaypointTemplate = (point) => {
+const createWaypointTemplate = (point) => {
   const {
     basePrice,
     dateFrom,
@@ -96,3 +96,25 @@ export const createWaypointTemplate = (point) => {
   </li>`;
 };
 
+export default class Waypoint {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createWaypointTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createItem(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
