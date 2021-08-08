@@ -1,4 +1,4 @@
-import { createItem } from '@utils/util';
+import { createItem } from '@utils/dom';
 
 const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">

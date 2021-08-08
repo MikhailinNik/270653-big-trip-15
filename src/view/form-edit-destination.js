@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 
 export const createDestinationTemplate = (destination) => (
   `<h3 class="event__section-title  event__section-title--destination">Destination</h3>

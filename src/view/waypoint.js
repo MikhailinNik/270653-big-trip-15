@@ -1,5 +1,6 @@
 import { DATE_FORMAT } from '@utils/const';
-import { createFormatForDate, getDateFromMilliseconds, getDurationTime, createItem } from '@utils/util';
+import { createFormatForDate, getDateFromMilliseconds, getDurationTime } from '@utils/util';
+import { createItem } from '@utils/dom';
 
 const createWaypointTemplate = (point) => {
   const {
@@ -33,8 +34,23 @@ const createWaypointTemplate = (point) => {
     : createFormatForDate(dateTo, DATE_FORMAT.HOURS_MINUTE);
 
   const millesecond = getDateFromMilliseconds(dateTo, dateFrom);
+  const durationDay = getDurationTime(millesecond, DATE_FORMAT.DAY);
   const durationHour = getDurationTime(millesecond, DATE_FORMAT.HOUR);
   const durationMinute = getDurationTime(millesecond, DATE_FORMAT.MINUTE);
+
+  const resultDay = durationDay === '00' || durationDay < 0
+    ? ''
+    : `${durationDay}D`;
+
+  const resultHour = durationHour === '00' || durationHour < 0
+    ? ''
+    : `${durationHour}H`;
+
+  const resultMinute = durationMinute === '00' || durationMinute < 0
+    ? ''
+    : `${durationMinute}M`;
+
+   
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -59,7 +75,15 @@ const createWaypointTemplate = (point) => {
           </time>
         </p>
         <p class="event__duration">
-        ${durationHour} H ${durationMinute} M
+  ${resultDay}
+  ${resultHour}
+  ${resultDay !== '' && durationHour === '00'
+    ? durationHour + `H`
+    : ''}
+  ${resultMinute}
+  ${resultDay !== '' && durationMinute === '00'
+    ? durationMinute + `H`
+    : ''}
         </p>
       </div>
       <p class="event__price">

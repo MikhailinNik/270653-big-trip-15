@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 import { POINT_TYPES } from '@utils/const';
 import { getUpperCaseFirstLetter, getLowerCaseFirstLetter } from '@utils/util';
 

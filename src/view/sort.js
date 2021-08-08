@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 
 const createPointSortTemplate = () => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -45,5 +45,9 @@ export default class Sort {
     }
 
     return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }

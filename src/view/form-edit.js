@@ -1,4 +1,4 @@
-import { createItem } from '@utils/util';
+import { createItem } from '@utils/dom';
 import { createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';

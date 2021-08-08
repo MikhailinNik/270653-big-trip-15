@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 
 const createFilterTemplate = () => (
   `<form class="trip-filters" action="#" method="get">

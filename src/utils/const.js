@@ -1,6 +1,7 @@
 const DATE_FORMAT = {
   MONTH_DAY: 'MMM DD',
   HOURS_MINUTE: 'HH:mm',
+  DAY: 'DD',
   HOUR: 'HH',
   MINUTE: 'mm',
 };
@@ -8,6 +9,11 @@ const DATE_FORMAT = {
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
+};
+
+const KeyboardKey = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc',
 };
 
 const POINT_TYPES = [
@@ -60,5 +66,6 @@ export {
   DESCRIPTIONS,
   OPTIONS,
   DATE_FORMAT,
-  RenderPosition
+  RenderPosition,
+  KeyboardKey
 };

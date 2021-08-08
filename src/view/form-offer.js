@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 
 export const createPointOfferTemplate = (offersForm) => offersForm.map(({ offers }) => (
   `<div class="event__offer-selector">

@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/util';
+import { createItem } from '@/utils/dom';
 
 const createTripInfoTemplate = () => (
   `<section class="trip-main__trip-info  trip-info">
