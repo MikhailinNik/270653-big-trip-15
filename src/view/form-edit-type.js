@@ -1,3 +1,4 @@
+import { createItem } from '@/utils/util';
 import { POINT_TYPES } from '@utils/const';
 import { getUpperCaseFirstLetter, getLowerCaseFirstLetter } from '@utils/util';
 
@@ -21,3 +22,26 @@ export const createPointTypeTemplate = (currentType) => POINT_TYPES.map((type) =
   </div>`
   );
 }).join('');
+
+export default class FormEditType {
+  constructor(currentType) {
+    this._currentType = currentType;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTypeTemplate(this._currentType);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createItem(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

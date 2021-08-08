@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { renderTemplatePosition } from '@utils/const';
+import { RenderPosition } from '@utils/const';
 
 dayjs.extend(duration);
 
@@ -12,31 +12,26 @@ const getLowerCaseFirstLetter = (type) => type[0].toLowerCase() + type.slice(1);
 
 const getDateFromMilliseconds = (dateTo, dateFrom) => +dateTo - +dateFrom;
 
-const renderTemplateElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place) {
-    case renderTemplatePosition.AFTERBEGIN:
+    case RenderPosition.AFTERBEGIN:
       container.prepend(element);
       break;
-    case renderTemplatePosition.BEFOREEND:
+    case RenderPosition.BEFOREEND:
       container.append(element);
       break;
   }
 };
 
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+
+const createItem = (template) => {
+  const newContainer = document.createElement('div');
+  newContainer.innerHTML = template;
+
+  return newContainer.firstChild;
 };
 
-// Принцип работы прост:
-// 1. создаём пустой div-блок
-// 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент
-// 3. возвращаем этот DOM-элемент
-const createElement = (template) => {
-  const newElement = document.createElement('div'); // 1
-  newElement.innerHTML = template; // 2
-
-  return newElement.firstChild; // 3
-};
+const replaceItem = (place, toItem, fromItem) => place.replaceChild(toItem.getElement(), fromItem.getElement());
 
 export {
   createFormatForDate,
@@ -44,7 +39,7 @@ export {
   getLowerCaseFirstLetter,
   getDateFromMilliseconds,
   getDurationTime,
-  renderTemplateElement,
-  renderTemplate,
-  createElement
+  render,
+  createItem,
+  replaceItem
 };

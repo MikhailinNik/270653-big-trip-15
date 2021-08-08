@@ -5,7 +5,7 @@ const DATE_FORMAT = {
   MINUTE: 'mm',
 };
 
-const renderTemplatePosition = {
+const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
@@ -60,5 +60,5 @@ export {
   DESCRIPTIONS,
   OPTIONS,
   DATE_FORMAT,
-  renderTemplatePosition
+  RenderPosition
 };
