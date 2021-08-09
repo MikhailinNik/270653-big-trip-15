@@ -11,7 +11,7 @@ const render = (container, element, place) => {
   }
 };
 
-const createItem = (template) => {
+const createElement = (template) => {
   const newContainer = document.createElement('div');
   newContainer.innerHTML = template;
 
@@ -22,6 +22,6 @@ const replaceItem = (place, toItem, fromItem) => place.replaceChild(toItem.getEl
 
 export {
   render,
-  createItem,
+  createElement,
   replaceItem
 };

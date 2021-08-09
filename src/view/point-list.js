@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/dom';
+import { createElement } from '@/utils/dom';
 
 const createPointListTemplate = () => '<ul class="trip-events__list"></ul>';
 
@@ -13,7 +13,7 @@ export default class PointList {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
 
       return this._element;
     }

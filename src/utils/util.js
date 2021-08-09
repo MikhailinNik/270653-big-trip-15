@@ -8,12 +8,16 @@ const getDurationTime = (millisecond, dateFormat) => dayjs.duration(millisecond)
 const getUpperCaseFirstLetter = (type) => type[0].toUpperCase() + type.slice(1);
 const getLowerCaseFirstLetter = (type) => type[0].toLowerCase() + type.slice(1);
 
-const getDateFromMilliseconds = (dateTo, dateFrom) => +dateTo - +dateFrom;
+const getDateFromMilliseconds = (dateTo, dateFrom) => dateTo - dateFrom;
+
+const getLeadingZero = (value) => String(value).padStart(2, '0');
 
 export {
   createFormatForDate,
   getUpperCaseFirstLetter,
   getLowerCaseFirstLetter,
+  getDurationTime,
+  getLeadingZero,
   getDateFromMilliseconds,
-  getDurationTime
+  dayjs
 };

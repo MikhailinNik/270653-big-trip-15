@@ -29,7 +29,7 @@ const destinations = [
   },
 ];
 
-const offersForm = [
+const allOffers = [
   {
     type: 'taxi',
     offers: [
@@ -97,6 +97,6 @@ const points = [
 
 export {
   destinations,
-  offersForm,
+  allOffers,
   points
 };

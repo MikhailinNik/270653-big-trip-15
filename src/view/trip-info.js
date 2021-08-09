@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/dom';
+import { createElement } from '@/utils/dom';
 
 const createTripInfoTemplate = () => (
   `<section class="trip-main__trip-info  trip-info">
@@ -24,7 +24,7 @@ export default class TripInfo {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

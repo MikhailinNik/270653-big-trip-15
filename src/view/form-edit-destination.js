@@ -1,6 +1,4 @@
-import { createItem } from '@/utils/dom';
-
-export const createDestinationTemplate = (destination) => (
+export const createDestinationTemplate = (destination = []) => (
   `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">
   ${destination.description === null
@@ -20,27 +18,3 @@ export const createDestinationTemplate = (destination) => (
         </div>
       </div>`
 );
-
-
-export default class FormEditDestination {
-  constructor(destination) {
-    this._destination = destination;
-    this._element = null;
-  }
-
-  getTemplate() {
-    return createDestinationTemplate(this._destination);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createItem(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-}

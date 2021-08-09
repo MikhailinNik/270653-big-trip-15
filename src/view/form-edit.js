@@ -1,14 +1,17 @@
-import { createItem } from '@utils/dom';
-import { createPointOfferTemplate } from '@view/form-offer';
+import { createElement } from '@utils/dom';
+import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
 
-export const createPointFormTemplate = (point, destinations, offersForm) => {
-  const { type, destination, basePrice } = point;
+export const createPointFormTemplate = (point, destinations = [], allOffers = []) => {
+  const {
+    type = '',
+    destination = [],
+    basePrice = 0,
+    offers = [],
+  } = point;
 
-  const eventType = type === null
-    ? ''
-    : type;
+  const renderOffers = getOffers(offers, allOffers);
 
   return (
     `<li class="trip-events__item">
@@ -18,31 +21,26 @@ export const createPointFormTemplate = (point, destinations, offersForm) => {
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" 
-            src="img/icons/${eventType}.png" alt="Event type icon">
+            src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-    ${createPointTypeTemplate(eventType)}
+                ${createPointTypeTemplate(type)}
             </fieldset>
           </div>
         </div>
 
         <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-    ${eventType}
+          ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" 
         name="event-destination" 
-        value="${destination === null
-      ? ''
-      : destination.name}" list="destination-list-1">
+        value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-    ${destinations.map(({ name }) => name === null
-      ? ''
-      : `<option value="${name}">${name}</option>`).join('')}
+        ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -72,14 +70,13 @@ export const createPointFormTemplate = (point, destinations, offersForm) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-    ${createPointOfferTemplate(offersForm)}
+          
+            ${createPointOfferTemplate(renderOffers)}
           </div>
         </section>
 
         <section class="event__section  event__section--destination">
-    ${destination === null
-      ? ''
-      : createDestinationTemplate(destination)}
+          ${createDestinationTemplate(destination)}
         </section>
       </section>
     </form>
@@ -100,7 +97,7 @@ export default class FormEdit {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

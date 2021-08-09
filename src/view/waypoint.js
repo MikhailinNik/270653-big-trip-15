@@ -1,111 +1,77 @@
+import { dayjs, getLeadingZero, createFormatForDate } from '@utils/util';
+import { createElement } from '@utils/dom';
 import { DATE_FORMAT } from '@utils/const';
-import { createFormatForDate, getDateFromMilliseconds, getDurationTime } from '@utils/util';
-import { createItem } from '@utils/dom';
 
 const createWaypointTemplate = (point) => {
   const {
-    basePrice,
-    dateFrom,
-    dateTo,
-    destination,
-    isFavourite,
-    offers,
-    type,
+    basePrice = 0,
+    dateFrom = null,
+    dateTo = null,
+    destination = [],
+    isFavourite = false,
+    offers = [],
+    type = '',
   } = point;
 
-  const eventPrice = basePrice === null
-    ? ''
-    : basePrice;
+  const formatDuration = () => {
+    const { days, hours, minutes } = dayjs.duration(dateTo - dateFrom).$d;
 
-  const eventType = type === null
-    ? ''
-    : type;
+    if (days > 0) {
+      return `${getLeadingZero(days)}D ${getLeadingZero(hours)}H ${getLeadingZero(minutes)}M`;
+    }
 
-  const eventDate = dateFrom === null
-    ? ''
-    : createFormatForDate(dateFrom, DATE_FORMAT.MONTH_DAY);
+    if (hours > 0) {
+      return `${getLeadingZero(hours)}H ${getLeadingZero(minutes)}M`;
+    }
 
-  const firstDate = dateFrom === null
-    ? ''
-    : createFormatForDate(dateFrom, DATE_FORMAT.HOURS_MINUTE);
+    return minutes > 0 ? `${getLeadingZero(minutes)}M` : '';
+  };
 
-  const secondDate = dateTo === null
-    ? ''
-    : createFormatForDate(dateTo, DATE_FORMAT.HOURS_MINUTE);
+  const getTypeTemplate = (eventType) => (
+    `<div class="event__type">
+      <img class="event__type-icon"
+      width="42" height="42"
+      src="img/icons/${eventType}.png"
+      alt="Event ${eventType} icon">
+    </div>`
+  );
 
-  const millesecond = getDateFromMilliseconds(dateTo, dateFrom);
-  const durationDay = getDurationTime(millesecond, DATE_FORMAT.DAY);
-  const durationHour = getDurationTime(millesecond, DATE_FORMAT.HOUR);
-  const durationMinute = getDurationTime(millesecond, DATE_FORMAT.MINUTE);
-
-  const resultDay = durationDay === '00' || durationDay < 0
-    ? ''
-    : `${durationDay}D`;
-
-  const resultHour = durationHour === '00' || durationHour < 0
-    ? ''
-    : `${durationHour}H`;
-
-  const resultMinute = durationMinute === '00' || durationMinute < 0
-    ? ''
-    : `${durationMinute}M`;
-
-   
-
-  return `<li class="trip-events__item">
-    <div class="event">
-      <time class="event__date" datetime="${dateFrom.toISOString()}">
-      ${eventDate}
-      </time>
-      <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType}.png" alt="Event ${eventType} icon">
-      </div>
-      <h3 class="event__title">
-      ${eventType} ${destination === null || destination.name === null
-  ? ''
-  : destination.name}</h3>
+  return (
+    `<li class="trip-events__item">
+      <div class="event">
+        <time class="event__date" datetime="${dateFrom.toISOString()}">
+        ${createFormatForDate(dateFrom, DATE_FORMAT.MONTH_DAY)}
+        </time>
+        ${getTypeTemplate(type)}
+      <h3 class="event__title">${type} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom.toISOString()}">
-          ${firstDate}
+          ${createFormatForDate(dateFrom, DATE_FORMAT.HOURS_MINUTE)}
           </time>
           &mdash;
           <time class="event__end-time" datetime="${dateTo.toISOString()}">
-          ${secondDate}
+          ${createFormatForDate(dateTo, DATE_FORMAT.HOURS_MINUTE)}
           </time>
         </p>
         <p class="event__duration">
-  ${resultDay}
-  ${resultHour}
-  ${resultDay !== '' && durationHour === '00'
-    ? durationHour + `H`
-    : ''}
-  ${resultMinute}
-  ${resultDay !== '' && durationMinute === '00'
-    ? durationMinute + `H`
-    : ''}
+        ${formatDuration()}
         </p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${eventPrice}</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-
         ${offers.map(({ title, price }) => `<li class="event__offer">
         <span class="event__offer-title">
-  ${title === null
-    ? ''
-    : title}
+        ${title}
         </span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">
-  ${price === null
-    ? ''
-    : price}
+        ${price}
         </span>
       </li>`).join('')}
-
       </ul>
       <button class="event__favorite-btn event__favorite-btn--${isFavourite}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -117,7 +83,8 @@ const createWaypointTemplate = (point) => {
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
-  </li>`;
+  </li>`
+  );
 };
 
 export default class Waypoint {
@@ -132,7 +99,7 @@ export default class Waypoint {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

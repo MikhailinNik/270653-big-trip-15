@@ -1,4 +1,4 @@
-import { createItem } from '@/utils/dom';
+import { createElement } from '@/utils/dom';
 
 const createFilterTemplate = () => (
   `<form class="trip-filters" action="#" method="get">
@@ -33,7 +33,7 @@ export default class Filter {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

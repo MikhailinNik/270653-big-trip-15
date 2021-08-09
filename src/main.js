@@ -1,4 +1,4 @@
-import { points, offersForm, destinations } from '@mock/data';
+import { points, allOffers, destinations } from '@mock/data';
 import { render, replaceItem } from '@utils/dom';
 import { RenderPosition, KeyboardKey } from '@utils/const';
 import MenuVeiw from '@view/menu';
@@ -23,16 +23,14 @@ render(controlsFilters, new FilterView().getElement(), RenderPosition.AFTERBEGIN
 const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');
 
-
 const pointListComponent = new PointListView();
 render(mainEvents, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
 const eventList = document.querySelector('.trip-events__list');
 
-
 for (const point of points) {
   const waypointComponent = new WaypointView(point);
-  const formEditComponent = new FormEditView(point, destinations, offersForm);
+  const formEditComponent = new FormEditView(point, destinations, allOffers);
 
   const rollUpButtonWaypoint = waypointComponent.getElement().querySelector('.event__rollup-btn');
   const rollUpButtonForm = formEditComponent.getElement().querySelector('.event__rollup-btn');
@@ -65,7 +63,6 @@ for (const point of points) {
   });
 
   render(eventList, waypointComponent.getElement(), RenderPosition.BEFOREEND);
-
 }
 
 if (points.length === 0) {
