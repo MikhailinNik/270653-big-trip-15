@@ -29,7 +29,6 @@ const createPointSortTemplate = () => (
 </form>`
 );
 
-
 export default class Sort {
   constructor() {
     this._element = null;

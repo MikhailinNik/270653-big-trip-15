@@ -4,7 +4,6 @@ import { getLowerCaseFirstLetter } from '@utils/util';
 export const createPointTypeTemplate = (currentType) => POINT_TYPES.map((type) => {
   const eventType = getLowerCaseFirstLetter(type);
 
-
   return (
     `<div class="event__type-item">
       <input 
