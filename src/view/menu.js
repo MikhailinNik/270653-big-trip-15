@@ -1,4 +1,4 @@
-import { createItem } from '@utils/util';
+import { createElement } from '@utils/dom';
 
 const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -6,7 +6,6 @@ const createSiteMenuTemplate = () => (
   <a class="trip-tabs__btn" href="#">Stats</a>
 </nav>`
 );
-
 
 export default class Menu {
   constructor() {
@@ -19,7 +18,7 @@ export default class Menu {
 
   getElement() {
     if (!this._element) {
-      this._element = createItem(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

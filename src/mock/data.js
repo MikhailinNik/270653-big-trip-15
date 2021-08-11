@@ -29,20 +29,14 @@ const destinations = [
   },
 ];
 
-const offersForm = [
+const allOffers = [
   {
-    type: 'taxi',
-    offers: [
+    typeOffer: 'taxi',
+    offersType: [
       {
         title: 'Upgrade to a business class',
         price: 100,
       },
-    ],
-  },
-
-  {
-    type: 'taxi',
-    offers: [
       {
         title: 'Upgrade to a business class',
         price: 50,
@@ -55,7 +49,7 @@ const points = [
   {
     basePrice: 1100,
     dateFrom: new Date('2019-07-10T22:56:56.845Z'),
-    dateTo: new Date('2019-07-11T10:55:56.845Z'),
+    dateTo: new Date('2019-07-12T22:58:56.845Z'),
     destination: destinations[0],
     id: '0',
     isFavourite: true,
@@ -97,6 +91,6 @@ const points = [
 
 export {
   destinations,
-  offersForm,
+  allOffers,
   points
 };
