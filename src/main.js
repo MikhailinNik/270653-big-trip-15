@@ -1,6 +1,7 @@
 import { points, allOffers, destinations } from '@mock/data';
-import { render, replaceItem } from '@utils/dom';
-import { RenderPosition, KeyboardKey } from '@utils/const';
+import { render, replace } from '@utils/dom';
+import { RenderPosition } from '@utils/const';
+import { isEscapeEvent } from '@utils/util';
 import MenuVeiw from '@view/menu';
 import FilterView from '@view/filter';
 import TripInfoView from '@view/trip-info';
@@ -37,36 +38,33 @@ for (const point of points) {
   const submitForm = formEditComponent.getElement().querySelector('.event--edit');
 
   const onEscapeKeyDown = (evt) => {
-    if (evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESC) {
+    if (isEscapeEvent(evt)) {
       evt.preventDefault();
 
-      replaceItem(eventList, waypointComponent, formEditComponent);
+      replace(eventList, waypointComponent, formEditComponent);
       document.removeEventListener('keydown', onEscapeKeyDown);
     }
   };
 
   rollUpButtonWaypoint.addEventListener('click', () => {
-    replaceItem(eventList, formEditComponent, waypointComponent);
+    replace(eventList, formEditComponent, waypointComponent);
     document.addEventListener('keydown', onEscapeKeyDown);
   });
 
   rollUpButtonForm.addEventListener('click', () => {
-    replaceItem(eventList, waypointComponent, formEditComponent);
+    replace(eventList, waypointComponent, formEditComponent);
     document.addEventListener('keydown', onEscapeKeyDown);
   });
 
-  rollUpButtonForm.addEventListener('keydown', onEscapeKeyDown);
-
   submitForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    replaceItem(eventList, waypointComponent, formEditComponent);
+    replace(eventList, waypointComponent, formEditComponent);
   });
 
   render(eventList, waypointComponent.getElement(), RenderPosition.BEFOREEND);
 }
 
-if (points.length === 0) {
-  render(mainEvents, new ListEmptyView().getElement(), RenderPosition.AFTERBEGIN);
-} else {
-  render(mainEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
-}
+points.length === 0
+  ? render(mainEvents, new ListEmptyView().getElement(), RenderPosition.AFTERBEGIN)
+  : render(mainEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
+

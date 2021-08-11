@@ -1,4 +1,4 @@
-const DATE_FORMAT = {
+const DateFormat = {
   MONTH_DAY: 'MMM DD',
   HOURS_MINUTE: 'HH:mm',
   DAY: 'DD',
@@ -65,7 +65,7 @@ export {
   TOWNS,
   DESCRIPTIONS,
   OPTIONS,
-  DATE_FORMAT,
+  DateFormat,
   RenderPosition,
   KeyboardKey
 };

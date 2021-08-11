@@ -15,13 +15,13 @@ const createElement = (template) => {
   const newContainer = document.createElement('div');
   newContainer.innerHTML = template;
 
-  return newContainer.firstChild;
+  return newContainer.firstElementChild;
 };
 
-const replaceItem = (place, toItem, fromItem) => place.replaceChild(toItem.getElement(), fromItem.getElement());
+const replace = (place, toItem, fromItem) => place.replaceChild(toItem.getElement(), fromItem.getElement());
 
 export {
   render,
   createElement,
-  replaceItem
+  replace
 };

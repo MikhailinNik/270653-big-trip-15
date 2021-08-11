@@ -11,7 +11,12 @@ export const createPointFormTemplate = (point, destinations = [], allOffers = []
     offers = [],
   } = point;
 
-  const renderOffers = getOffers(offers, allOffers);
+  const typeOffers = allOffers.reduce((map, { typeOffer, offersType }) => {
+    map[typeOffer] = map[typeOffer] ? map[typeOffer].concat(offersType) : offersType;
+    return map[typeOffer];
+  }, {});
+
+  const renderOffers = getOffers(offers, typeOffers);
 
   return (
     `<li class="trip-events__item">
@@ -54,9 +59,9 @@ export const createPointFormTemplate = (point, destinations = [], allOffers = []
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
-            &euro;${basePrice}
+            &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

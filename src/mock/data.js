@@ -31,18 +31,12 @@ const destinations = [
 
 const allOffers = [
   {
-    type: 'taxi',
-    offers: [
+    typeOffer: 'taxi',
+    offersType: [
       {
         title: 'Upgrade to a business class',
         price: 100,
       },
-    ],
-  },
-
-  {
-    type: 'taxi',
-    offers: [
       {
         title: 'Upgrade to a business class',
         price: 50,
