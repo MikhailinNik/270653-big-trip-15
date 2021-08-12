@@ -88,9 +88,15 @@ const points = [
   },
 ];
 
+const pointTypeToOffers = allOffers.reduce((map, { typeOffer, offersType }) => {
+  map[typeOffer] = map[typeOffer] ? map[typeOffer].concat(offersType) : offersType;
+  return map;
+}, {});
+
 
 export {
   destinations,
   allOffers,
-  points
+  points,
+  pointTypeToOffers
 };

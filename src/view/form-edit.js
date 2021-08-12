@@ -1,9 +1,10 @@
-import { createElement } from '@utils/dom';
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
+import AbstarctView from '@/view/abstract';
 
-export const createPointFormTemplate = (point, destinations = [], allOffers = []) => {
+
+export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = []) => {
   const {
     type = '',
     destination = [],
@@ -11,10 +12,7 @@ export const createPointFormTemplate = (point, destinations = [], allOffers = []
     offers = [],
   } = point;
 
-  const typeOffers = allOffers.reduce((map, { typeOffer, offersType }) => {
-    map[typeOffer] = map[typeOffer] ? map[typeOffer].concat(offersType) : offersType;
-    return map[typeOffer];
-  }, {});
+  const typeOffers = pointTypeToOffers[type] || [];
 
   const renderOffers = getOffers(offers, typeOffers);
 
@@ -88,27 +86,38 @@ export const createPointFormTemplate = (point, destinations = [], allOffers = []
   </li>`);
 };
 
-export default class FormEdit {
+export default class FormEdit extends AbstarctView{
   constructor(point, destinations, offers) {
+    super();
     this._point = point;
     this._destinations = destinations;
     this._offers = offers;
-    this._element = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
+    this._submitHandler = this._submitHandler.bind(this);
   }
 
   getTemplate() {
     return createPointFormTemplate(this._point, this._destinations, this._offers);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit();
+  }
+
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._clickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector('.event--edit').addEventListener('submit', this._submitHandler);
   }
 }
