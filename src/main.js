@@ -27,8 +27,6 @@ const mainEvents = main.querySelector('.trip-events');
 const pointListComponent = new PointListView();
 render(mainEvents, pointListComponent, RenderPosition.BEFOREEND);
 
-const eventList = document.querySelector('.trip-events__list');
-
 for (const point of points) {
   const waypointComponent = new WaypointView(point);
   const formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
@@ -37,23 +35,24 @@ for (const point of points) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
 
-      replace(eventList, waypointComponent, formEditComponent);
+      replace(pointListComponent, waypointComponent, formEditComponent);
       document.removeEventListener('keydown', onEscapeKeyDown);
     }
   };
 
-  waypointComponent.setClickHandler(() => {
-    replace(eventList, formEditComponent, waypointComponent);
+  waypointComponent.setOnclick(() => {
+    replace(pointListComponent, formEditComponent, waypointComponent);
     document.addEventListener('keydown', onEscapeKeyDown);
   });
 
-  formEditComponent.setClickHandler(() => {
-    replace(eventList, waypointComponent, formEditComponent);
+  formEditComponent.setOnClick(() => {
+    replace(pointListComponent, waypointComponent, formEditComponent);
     document.addEventListener('keydown', onEscapeKeyDown);
   });
 
-  formEditComponent.setFormSubmitHandler(() => {
-    replace(eventList, waypointComponent, formEditComponent);
+  formEditComponent.setOnFormSubmit(() => {
+    replace(pointListComponent, waypointComponent, formEditComponent);
+    document.removeEventListener('keydown', onEscapeKeyDown);
   });
 
   render(pointListComponent, waypointComponent, RenderPosition.BEFOREEND);

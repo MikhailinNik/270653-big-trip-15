@@ -93,31 +93,31 @@ export default class FormEdit extends AbstarctView{
     this._destinations = destinations;
     this._offers = offers;
 
-    this._clickHandler = this._clickHandler.bind(this);
-    this._submitHandler = this._submitHandler.bind(this);
+    this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
+    this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
   }
 
   getTemplate() {
     return createPointFormTemplate(this._point, this._destinations, this._offers);
   }
 
-  _clickHandler(evt) {
+  setOnClick(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
+  }
+
+  setOnFormSubmit(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector('.event--edit').addEventListener('submit', this._onEventEditSubmit);
+  }
+
+  _onRollUpButtonClick(evt) {
     evt.preventDefault();
     this._callback.click();
   }
 
-  _submitHandler(evt) {
+  _onEventEditSubmit(evt) {
     evt.preventDefault();
     this._callback.submit();
-  }
-
-  setClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._clickHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.submit = callback;
-    this.getElement().querySelector('.event--edit').addEventListener('submit', this._submitHandler);
   }
 }

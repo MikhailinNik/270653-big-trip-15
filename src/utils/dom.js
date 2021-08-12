@@ -27,7 +27,13 @@ const createElement = (template) => {
   return newContainer.firstElementChild;
 };
 
-const replace = (place, toItem, fromItem) => place.replaceChild(toItem.getElement(), fromItem.getElement());
+const replace = (place, toItem, fromItem) => {
+  if (place instanceof Abstract) {
+    place = place.getElement();
+  }
+
+  return place.replaceChild(toItem.getElement(), fromItem.getElement());
+};
 
 export {
   render,
