@@ -1,5 +1,5 @@
-import { createElement } from '@utils/dom';
 import { createWaypointDateTemplate } from '@view/waypoint-date';
+import AbstarctView from '@/view/abstract';
 
 const createWaypointTemplate = (point) => {
   const {
@@ -41,25 +41,25 @@ const createWaypointTemplate = (point) => {
   );
 };
 
-export default class Waypoint {
+export default class Waypoint extends AbstarctView{
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
+
+    this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
   }
 
   getTemplate() {
     return createWaypointTemplate(this._points);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  setOnclick(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
   }
 
-  removeElement() {
-    this._element = null;
+  _onRollUpButtonClick(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 }

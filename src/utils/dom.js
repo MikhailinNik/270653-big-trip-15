@@ -1,12 +1,21 @@
 import { RenderPosition } from '@utils/const';
+import Abstract from '@view/abstract';
 
-const render = (container, element, place) => {
+const render = (container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      container.append(child);
       break;
   }
 };
@@ -18,7 +27,13 @@ const createElement = (template) => {
   return newContainer.firstElementChild;
 };
 
-const replace = (place, toItem, fromItem) => place.replaceChild(toItem.getElement(), fromItem.getElement());
+const replace = (place, toItem, fromItem) => {
+  if (place instanceof Abstract) {
+    place = place.getElement();
+  }
+
+  return place.replaceChild(toItem.getElement(), fromItem.getElement());
+};
 
 export {
   render,

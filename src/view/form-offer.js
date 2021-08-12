@@ -2,7 +2,7 @@ export const getOffers = (checkedOffers, typeOffers) => {
   const offers = checkedOffers.map((offer) => ({ ...offer, isChecked: true }));
 
   typeOffers.forEach(( offer ) => {
-    const checked = checkedOffers.some(({ title, price }) =>
+    const checked = offers.some(({ title, price }) =>
       title === offer.title &&
       price === offer.price,
     );
@@ -15,16 +15,16 @@ export const getOffers = (checkedOffers, typeOffers) => {
   return offers;
 };
 
-export const createPointOfferTemplate = (offers) => offers.map(({ title, price, isChecked = false } = {}) => (
+export const createPointOfferTemplate = (offers) => offers.map(({ title, price, isChecked = false } = {}, idx) => (
   `<div class="event__offer-selector">
       <input
       class="event__offer-checkbox  visually-hidden" 
-      id="event-offer-luggage-1"
+      id="event-offer-${idx}"
       type="checkbox"
-      name="event-offer-luggage"
+      name="event-offer-${idx}"
       ${isChecked ? 'checked' : ''}
     >
-      <label class="event__offer-label" for="event-offer-luggage-1">
+      <label class="event__offer-label" for="event-offer-${idx}">
         <span class="event__offer-title">
           ${title}
         </span>

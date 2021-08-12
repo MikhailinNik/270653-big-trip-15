@@ -1,4 +1,4 @@
-import { createElement } from '@/utils/dom';
+import AbstarctView from '@/view/abstract';
 
 const createTripInfoTemplate = () => (
   `<section class="trip-main__trip-info  trip-info">
@@ -13,24 +13,8 @@ const createTripInfoTemplate = () => (
 </section>`
 );
 
-export default class TripInfo {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripInfo extends AbstarctView{
   getTemplate() {
     return createTripInfoTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
