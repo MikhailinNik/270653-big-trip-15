@@ -11,6 +11,8 @@ import FormEditView from '@view/form-edit';
 import WaypointView from '@view/waypoint';
 import ListEmptyView from '@/view/list-empty';
 
+import PointPresenter from '@presenter/point.js';
+
 const siteHeaderContainer = document.querySelector('.page-header');
 const siteContainer = siteHeaderContainer.querySelector('.trip-main');
 render(siteContainer, new TripInfoView(), RenderPosition.AFTERBEGIN);
@@ -24,41 +26,6 @@ render(controlsFilters, new FilterView(), RenderPosition.AFTERBEGIN);
 const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');
 
-const pointListComponent = new PointListView();
-render(mainEvents, pointListComponent, RenderPosition.BEFOREEND);
-
-for (const point of points) {
-  const waypointComponent = new WaypointView(point);
-  const formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
-
-  const onEscapeKeyDown = (evt) => {
-    if (isEscapeEvent(evt)) {
-      evt.preventDefault();
-
-      replace(pointListComponent, waypointComponent, formEditComponent);
-      document.removeEventListener('keydown', onEscapeKeyDown);
-    }
-  };
-
-  waypointComponent.setOnclick(() => {
-    replace(pointListComponent, formEditComponent, waypointComponent);
-    document.addEventListener('keydown', onEscapeKeyDown);
-  });
-
-  formEditComponent.setOnClick(() => {
-    replace(pointListComponent, waypointComponent, formEditComponent);
-    document.addEventListener('keydown', onEscapeKeyDown);
-  });
-
-  formEditComponent.setOnFormSubmit(() => {
-    replace(pointListComponent, waypointComponent, formEditComponent);
-    document.removeEventListener('keydown', onEscapeKeyDown);
-  });
-
-  render(pointListComponent, waypointComponent, RenderPosition.BEFOREEND);
-}
-
-points.length === 0
-  ? render(mainEvents, new ListEmptyView(), RenderPosition.AFTERBEGIN)
-  : render(mainEvents, new SortView(), RenderPosition.AFTERBEGIN);
+const pointPresenter = new PointPresenter(mainEvents);
+pointPresenter.init(points, destinations, pointTypeToOffers);
 
