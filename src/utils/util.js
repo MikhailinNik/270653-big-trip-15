@@ -14,11 +14,21 @@ const getLeadingZero = (value) => String(value).padStart(2, '0');
 
 const isEscapeEvent = (evt) => Object.values(KeyboardKey).includes(evt.key);
 
+const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+
 export {
   getDurationToMilliseconds,
   createFormatForDate,
   getUpperCaseFirstLetter,
   getLowerCaseFirstLetter,
   getLeadingZero,
-  isEscapeEvent
+  isEscapeEvent,
+  remove
 };

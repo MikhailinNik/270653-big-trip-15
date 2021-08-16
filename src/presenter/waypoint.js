@@ -1,7 +1,7 @@
 import WaypointView from '@view/waypoint';
 import FormEditView from '@view/form-edit';
 import { render, replace } from '@utils/dom';
-import { isEscapeEvent } from '@utils/util';
+import { isEscapeEvent, remove } from '@utils/util';
 import { RenderPosition } from '@utils/const';
 
 export default class Waypoint {
@@ -28,7 +28,22 @@ export default class Waypoint {
     this._formEditComponent.setOnFormSubmit(this._onFormEditSubmit);
 
     render(this._pointListComponent, this._waypointComponent, RenderPosition.BEFOREEND);
+  }
 
+  reinit() {
+    const prevWaypointComponent = this._waypointComponent;
+    const prevFormEditComponent = this._formEditComponent;
+
+    replace(this._pointListComponent, this._waypointComponent, prevWaypointComponent);
+    replace(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
+
+    remove(prevWaypointComponent);
+    remove(prevFormEditComponent);
+  }
+
+  destroy() {
+    remove(this._waypointComponent);
+    remove(this._formEditComponent);
   }
 
   _replaceFormToPoint() {
