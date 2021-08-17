@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { KeyboardKey } from '@utils/const';
+import Abstract from '@view/abstract';
 dayjs.extend(duration);
 
 const getDurationToMilliseconds = (millisecond) => dayjs.duration(millisecond).$d;
@@ -23,6 +24,20 @@ const remove = (component) => {
   component.removeElement();
 };
 
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
 export {
   getDurationToMilliseconds,
   createFormatForDate,
@@ -30,5 +45,6 @@ export {
   getLowerCaseFirstLetter,
   getLeadingZero,
   isEscapeEvent,
-  remove
+  remove,
+  updateItem
 };

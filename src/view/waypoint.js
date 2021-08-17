@@ -47,15 +47,26 @@ export default class Waypoint extends AbstarctView{
     this._points = points;
 
     this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
+    this._onFavouriteButtonClick = this._onFavouriteButtonClick.bind(this);
   }
 
   getTemplate() {
     return createWaypointTemplate(this._points);
   }
 
-  setOnclick(callback) {
+  setOnEditclick(callback) {
     this._callback.click = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
+  }
+
+  setOnFavouritePointClick(callback) {
+    this._callback.favouriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._onFavouriteButtonClick);
+  }
+
+  _onFavouriteButtonClick(evt) {
+    evt.preventDefault();
+    this._callback.favouriteClick();
   }
 
   _onRollUpButtonClick(evt) {

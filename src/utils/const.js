@@ -16,6 +16,11 @@ const KeyboardKey = {
   ESC: 'Esc',
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 const POINT_TYPES = [
   'Taxi',
   'Bus',
@@ -67,5 +72,6 @@ export {
   OPTIONS,
   DateFormat,
   RenderPosition,
-  KeyboardKey
+  KeyboardKey,
+  Mode
 };

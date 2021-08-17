@@ -118,6 +118,6 @@ export default class FormEdit extends AbstarctView{
 
   _onEventEditSubmit(evt) {
     evt.preventDefault();
-    this._callback.submit();
+    this._callback.submit(this._point);
   }
 }
