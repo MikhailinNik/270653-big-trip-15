@@ -1,4 +1,4 @@
-import { POINT_TYPES } from '@utils/const';
+import { POINT_TYPES } from '@mock/const';
 import { getLowerCaseFirstLetter } from '@utils/util';
 
 export const createPointTypeTemplate = (currentType) => POINT_TYPES.map((type) => {

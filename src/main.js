@@ -1,6 +1,5 @@
 import { points, destinations, pointTypeToOffers } from '@mock/data';
-import { render } from '@utils/dom';
-import { RenderPosition } from '@utils/const';
+import { render, RenderPosition } from '@utils/dom';
 import MenuVeiw from '@view/menu';
 import FilterView from '@view/filter';
 import TripInfoView from '@view/trip-info';
@@ -9,13 +8,13 @@ import PointListPresenter from '@presenter/point-list.js';
 
 const siteHeaderContainer = document.querySelector('.page-header');
 const siteContainer = siteHeaderContainer.querySelector('.trip-main');
-render(siteContainer, new TripInfoView(), RenderPosition.AFTERBEGIN);
+render(siteContainer, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 
 const controlsNavigation = siteHeaderContainer.querySelector('.trip-controls__navigation');
-render(controlsNavigation, new MenuVeiw(), RenderPosition.BEFOREEND);
+render(controlsNavigation, new MenuVeiw(), RenderPosition.BEFORE_END);
 
 const controlsFilters = siteHeaderContainer.querySelector('.trip-controls__filters');
-render(controlsFilters, new FilterView(), RenderPosition.AFTERBEGIN);
+render(controlsFilters, new FilterView(), RenderPosition.AFTER_BEGIN);
 
 const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');

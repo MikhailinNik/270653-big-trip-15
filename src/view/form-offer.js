@@ -8,7 +8,7 @@ export const getOffers = (checkedOffers, typeOffers) => {
     );
 
     if (!checked) {
-      offers.push({ ...offer, isChecked: true });
+      offers.push({ ...offer, isChecked: false });
     }
   });
 

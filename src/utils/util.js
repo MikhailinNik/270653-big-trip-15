@@ -4,6 +4,8 @@ import { KeyboardKey } from '@utils/const';
 import Abstract from '@view/abstract';
 dayjs.extend(duration);
 
+const ESCAPE_KEYS = Object.values(KeyboardKey);
+
 const getDurationToMilliseconds = (millisecond) => dayjs.duration(millisecond).$d;
 
 const createFormatForDate = (date, format) => dayjs(date).format(format);
@@ -13,7 +15,7 @@ const getLowerCaseFirstLetter = (type) => type[0].toLowerCase() + type.slice(1);
 
 const getLeadingZero = (value) => String(value).padStart(2, '0');
 
-const isEscapeEvent = (evt) => Object.values(KeyboardKey).includes(evt.key);
+const isEscapeEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
 
 const remove = (component) => {
   if (!(component instanceof Abstract)) {
@@ -24,7 +26,7 @@ const remove = (component) => {
   component.removeElement();
 };
 
-const updateItem = (items, update) => {
+const updateItemById = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
   if (index === -1) {
@@ -46,5 +48,5 @@ export {
   getLeadingZero,
   isEscapeEvent,
   remove,
-  updateItem
+  updateItemById
 };

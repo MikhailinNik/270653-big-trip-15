@@ -1,8 +1,8 @@
 import WaypointView from '@view/waypoint';
 import FormEditView from '@view/form-edit';
-import { render, replace } from '@utils/dom';
+import { render, replace, RenderPosition } from '@utils/dom';
 import { isEscapeEvent, remove } from '@utils/util';
-import { RenderPosition, Mode } from '@utils/const';
+import { pointMode } from '@utils/const';
 
 export default class Waypoint {
   constructor(pointListComponent, changeData, changeMode) {
@@ -10,15 +10,15 @@ export default class Waypoint {
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._waypointComponent = null;
+    this._pointComponent = null;
     this._formEditComponent = null;
-    this._mode = Mode.DEFAULT;
+    this._pointMode = pointMode.DEFAULT;
 
-    this._onWaypointClick = this._onWaypointClick.bind(this);
-    this._onFormEditClick = this._onFormEditClick.bind(this);
-    this._onFormEditSubmit = this._onFormEditSubmit.bind(this);
+    this._handleWaypointClick = this._handleWaypointClick.bind(this);
+    this._handleFormEditClick = this._handleFormEditClick.bind(this);
+    this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
     this._onEscapeKeyDown = this._onEscapeKeyDown.bind(this);
-    this._onFavouriteClick = this._onFavouriteClick.bind(this);
+    this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
   }
 
   init(point, destinations, pointTypeToOffers) {
@@ -26,76 +26,77 @@ export default class Waypoint {
     this._destinations = destinations;
     this._pointTypeToOffers = pointTypeToOffers;
 
-    const prevWaypointComponent = this._waypointComponent;
+    const prevPointComponent = this._pointComponent;
     const prevFormEditComponent = this._formEditComponent;
 
-    this._waypointComponent = new WaypointView(point);
+    this._pointComponent = new WaypointView(point);
     this._formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
 
-    this._waypointComponent.setOnEditclick(this._onWaypointClick);
+    this._pointComponent.setOnEditclick(this._handleWaypointClick);
 
-    this._formEditComponent.setOnClick(this._onFormEditClick);
+    this._formEditComponent.setOnClick(this._handleFormEditClick);
 
-    this._formEditComponent.setOnFormSubmit(this._onFormEditSubmit);
+    this._formEditComponent.setOnFormSubmit(this._handleFormEditSubmit);
 
-    this._waypointComponent.setOnFavouritePointClick(this._onFavouriteClick);
+    this._pointComponent.setOnFavouritePointClick(this._handleFavouriteClick);
 
-    if (prevWaypointComponent === null || prevFormEditComponent === null) {
-      render(this._pointListComponent, this._waypointComponent, RenderPosition.BEFOREEND);
+    if (prevPointComponent === null || prevFormEditComponent === null) {
+      render(this._pointListComponent, this._pointComponent, RenderPosition.BEFORE_END);
       return;
     }
 
-    if (this._mode === Mode.DEFAULT) {
-      replace(this._pointListComponent, this._waypointComponent, prevWaypointComponent);
+    if (this._pointMode === pointMode.DEFAULT) {
+      replace(this._pointListComponent, this._pointComponent, prevPointComponent);
     }
 
-    if (this._mode === Mode.EDITING) {
+    if (this._pointMode === pointMode.EDITING) {
       replace(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
     }
 
-    remove(prevWaypointComponent);
+    remove(prevPointComponent);
     remove(prevFormEditComponent);
   }
 
   destroy() {
-    remove(this._waypointComponent);
+    remove(this._pointComponent);
     remove(this._formEditComponent);
   }
 
   resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._pointMode !== pointMode.DEFAULT) {
       this._replaceFormToPoint();
+      this._removeKeydownListener();
     }
   }
 
   _replaceFormToPoint() {
-    replace(this._pointListComponent, this._waypointComponent, this._formEditComponent);
-    this._mode = Mode.DEFAULT;
+    replace(this._pointListComponent, this._pointComponent, this._formEditComponent);
+    this._pointMode = pointMode.DEFAULT;
   }
 
-  _replaceWaypointToFrom() {
-    replace(this._pointListComponent, this._formEditComponent, this._waypointComponent);
+  _replaceWaypointToForm() {
+    replace(this._pointListComponent, this._formEditComponent, this._pointComponent);
     this._changeMode();
-    this._mode = Mode.EDITING;
+    this._pointMode = pointMode.EDITING;
   }
 
-  _onWaypointClick() {
-    this._replaceWaypointToFrom();
+  _handleWaypointClick() {
+    this._replaceWaypointToForm();
     document.addEventListener('keydown', this._onEscapeKeyDown);
   }
 
-  _onFormEditClick() {
+  _handleFormEditClick() {
     this._replaceFormToPoint();
-    document.removeEventListener('keydown', this._onEscapeKeyDown);
+    this._removeKeydownListener();
   }
 
-  _onFormEditSubmit(point) {
+  _handleFormEditSubmit(point) {
     this._changeData(point);
     this._replaceFormToPoint();
-    document.removeEventListener('keydown', this._onEscapeKeyDown);
+    this._removeKeydownListener();
   }
 
-  _onFavouriteClick() {
+  _handleFavouriteClick() {
     this._changeData(
       Object.assign(
         {},
@@ -107,12 +108,16 @@ export default class Waypoint {
     );
   }
 
+  _removeKeydownListener() {
+    document.removeEventListener('keydown', this._onEscapeKeyDown);
+  }
+
   _onEscapeKeyDown(evt) {
     if (isEscapeEvent(evt)) {
       evt.preventDefault();
 
       this._replaceFormToPoint();
-      document.removeEventListener('keydown', this._onEscapeKeyDown);
+      this._removeKeydownListener();
     }
   }
 }

@@ -4,7 +4,7 @@ import { createDestinationTemplate } from '@view/form-edit-destination';
 import AbstarctView from '@/view/abstract';
 
 
-export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = []) => {
+export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = {}) => {
   const {
     type = '',
     destination = [],

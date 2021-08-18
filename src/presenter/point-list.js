@@ -1,19 +1,18 @@
 import SortView from '@view/sort';
 import PointListView from '@view/point-list';
 import ListEmptyView from '@/view/list-empty';
-import { render } from '@utils/dom';
-import { RenderPosition } from '@utils/const';
+import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
-import { updateItem } from '@utils/util';
+import { updateItemById } from '@utils/util';
 
 export default class PointList {
-  constructor(mainEvents) {
-    this._mainEvents = mainEvents;
+  constructor(container) {
+    this._container = container;
     this._waypointPresenter = new Map();
 
     this._sortComponent = new SortView();
-    this._pointListComponent = new PointListView();
-    this._listEmptyComponent = new ListEmptyView();
+    this._listComponent = new PointListView();
+    this._noPointsComponent = new ListEmptyView();
 
     this._onWaypointChange = this._onWaypointChange.bind(this);
     this._onWaypointMode = this._onWaypointMode.bind(this);
@@ -24,17 +23,17 @@ export default class PointList {
     this._destinations = destinations;
     this._pointTypeToOffers = pointTypeToOffers;
 
-    this._renderPointList();
+    this._renderList();
     this._renderWaypoints();
-    this._renderListEmpty(this._points);
+    this._renderNoPoints();
   }
 
-  _renderPointList() {
-    render(this._mainEvents, this._pointListComponent, RenderPosition.BEFOREEND);
+  _renderList() {
+    render(this._container, this._listComponent);
   }
 
   _renderWaypoint(point, destinations, pointTypeToOffers) {
-    const waypointPresenter = new WaypointPresenter(this._pointListComponent, this._onWaypointChange, this._onWaypointMode);
+    const waypointPresenter = new WaypointPresenter(this._listComponent, this._onWaypointChange, this._onWaypointMode);
     waypointPresenter.init(point, destinations, pointTypeToOffers);
     this._waypointPresenter.set(point.id, waypointPresenter);
   }
@@ -45,19 +44,19 @@ export default class PointList {
     }
   }
 
-  _clearPointList() {
+  _clearList() {
     this._waypointPresenter.forEach((point) => point.destroy());
     this._waypointPresenter.clear();
   }
 
-  _renderListEmpty(points) {
-    points.length === 0
-      ? render(this._mainEvents, this._listEmptyComponent, RenderPosition.AFTERBEGIN)
-      : render(this._mainEvents, this._sortComponent, RenderPosition.AFTERBEGIN);
+  _renderNoPoints() {
+    this._points.length === 0
+      ? render(this._container, this._noPointsComponent, RenderPosition.AFTER_BEGIN)
+      : render(this._container, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _onWaypointChange(updatedPoint) {
-    this._points = updateItem(this._points, updatedPoint);
+    this._points = updateItemById(this._points, updatedPoint);
     this._waypointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
