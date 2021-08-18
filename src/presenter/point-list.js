@@ -14,8 +14,8 @@ export default class PointList {
     this._listComponent = new PointListView();
     this._noPointsComponent = new ListEmptyView();
 
-    this._onWaypointChange = this._onWaypointChange.bind(this);
-    this._onWaypointMode = this._onWaypointMode.bind(this);
+    this._changeData = this._changeData.bind(this);
+    this._resetEditMode = this._resetEditMode.bind(this);
   }
 
   init(points, destinations, pointTypeToOffers) {
@@ -29,11 +29,11 @@ export default class PointList {
   }
 
   _renderList() {
-    render(this._container, this._listComponent);
+    render(this._container, this._listComponent, RenderPosition.BEFORE_END);
   }
 
   _renderWaypoint(point, destinations, pointTypeToOffers) {
-    const waypointPresenter = new WaypointPresenter(this._listComponent, this._onWaypointChange, this._onWaypointMode);
+    const waypointPresenter = new WaypointPresenter(this._listComponent, this._changeData, this._resetEditMode);
     waypointPresenter.init(point, destinations, pointTypeToOffers);
     this._waypointPresenter.set(point.id, waypointPresenter);
   }
@@ -55,12 +55,12 @@ export default class PointList {
       : render(this._container, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
-  _onWaypointChange(updatedPoint) {
+  _changeData(updatedPoint) {
     this._points = updateItemById(this._points, updatedPoint);
     this._waypointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
-  _onWaypointMode() {
+  _resetEditMode() {
     this._waypointPresenter.forEach((presenter) => presenter.resetView());
   }
 }

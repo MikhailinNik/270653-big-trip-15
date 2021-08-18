@@ -46,7 +46,7 @@ export default class Waypoint extends AbstarctView{
     super();
     this._points = points;
 
-    this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
+    this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onFavouriteButtonClick = this._onFavouriteButtonClick.bind(this);
   }
 
@@ -54,9 +54,9 @@ export default class Waypoint extends AbstarctView{
     return createWaypointTemplate(this._points);
   }
 
-  setOnEditclick(callback) {
+  setOnEditClick(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollupButtonClick);
   }
 
   setOnFavouritePointClick(callback) {
@@ -69,7 +69,7 @@ export default class Waypoint extends AbstarctView{
     this._callback.favouriteClick();
   }
 
-  _onRollUpButtonClick(evt) {
+  _onRollupButtonClick(evt) {
     evt.preventDefault();
     this._callback.click();
   }

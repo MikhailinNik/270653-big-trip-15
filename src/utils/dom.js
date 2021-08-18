@@ -5,7 +5,7 @@ const RenderPosition = {
   BEFORE_END: 'beforeend',
 };
 
-const render = (container, child, place = 'afterend') => {
+const render = (container, child, place) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -15,9 +15,6 @@ const render = (container, child, place = 'afterend') => {
   }
 
   switch (place) {
-    case place:
-      container.prepend(child);
-      break;
     case RenderPosition.AFTER_BEGIN:
       container.prepend(child);
       break;
@@ -34,12 +31,12 @@ const createElement = (template) => {
   return newContainer.firstElementChild;
 };
 
-const replace = (place, toItem, fromItem) => {
+const replace = (place, secondElement, firstElement) => {
   if (place instanceof Abstract) {
     place = place.getElement();
   }
 
-  return place.replaceChild(toItem.getElement(), fromItem.getElement());
+  return place.replaceChild(secondElement.getElement(), firstElement.getElement());
 };
 
 export {

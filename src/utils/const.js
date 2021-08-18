@@ -11,7 +11,7 @@ const KeyboardKey = {
   ESC: 'Esc',
 };
 
-const pointMode = {
+const FormEdit = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
@@ -19,5 +19,5 @@ const pointMode = {
 export {
   DateFormat,
   KeyboardKey,
-  pointMode
+  FormEdit
 };
