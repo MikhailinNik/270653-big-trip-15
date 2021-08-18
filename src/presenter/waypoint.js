@@ -14,7 +14,7 @@ export default class Waypoint {
     this._formEditComponent = null;
     this._formEdit = FormEdit.DEFAULT;
 
-    this._handleWaypointClick = this._handleWaypointClick.bind(this);
+    this._handlePointClick = this._handlePointClick.bind(this);
     this._handleFormEditClick = this._handleFormEditClick.bind(this);
     this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
     this._onEscapeKeyDown = this._onEscapeKeyDown.bind(this);
@@ -32,7 +32,7 @@ export default class Waypoint {
     this._pointComponent = new WaypointView(point);
     this._formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
 
-    this._pointComponent.setOnEditClick(this._handleWaypointClick);
+    this._pointComponent.setOnEditClick(this._handlePointClick);
 
     this._formEditComponent.setOnClick(this._handleFormEditClick);
 
