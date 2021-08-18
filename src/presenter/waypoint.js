@@ -1,0 +1,117 @@
+import WaypointView from '@view/waypoint';
+import FormEditView from '@view/form-edit';
+import { render, replace, RenderPosition } from '@utils/dom';
+import { isEscapeEvent, remove } from '@utils/util';
+import { FormEdit } from '@utils/const';
+
+export default class Waypoint {
+  constructor(pointListComponent, changeData, changeMode) {
+    this._pointListComponent = pointListComponent;
+    this._changeData = changeData;
+    this._changeMode = changeMode;
+
+    this._pointComponent = null;
+    this._formEditComponent = null;
+    this._formEdit = FormEdit.DEFAULT;
+
+    this._handlePointClick = this._handlePointClick.bind(this);
+    this._handleFormEditClick = this._handleFormEditClick.bind(this);
+    this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
+    this._onEscapeKeyDown = this._onEscapeKeyDown.bind(this);
+    this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
+  }
+
+  init(point, destinations, pointTypeToOffers) {
+    this._point = point;
+    this._destinations = destinations;
+    this._pointTypeToOffers = pointTypeToOffers;
+
+    const prevPointComponent = this._pointComponent;
+    const prevFormEditComponent = this._formEditComponent;
+
+    this._pointComponent = new WaypointView(point);
+    this._formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
+
+    this._pointComponent.setOnEditClick(this._handlePointClick);
+
+    this._formEditComponent.setOnClick(this._handleFormEditClick);
+
+    this._formEditComponent.setOnFormSubmit(this._handleFormEditSubmit);
+
+    this._pointComponent.setOnFavouritePointClick(this._handleFavouriteClick);
+
+    if (prevPointComponent === null || prevFormEditComponent === null) {
+      render(this._pointListComponent, this._pointComponent, RenderPosition.BEFORE_END);
+      return;
+    }
+
+    if (this._formEdit === FormEdit.DEFAULT) {
+      replace(this._pointListComponent, this._pointComponent, prevPointComponent);
+    }
+
+    if (this._formEdit === FormEdit.EDITING) {
+      replace(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevFormEditComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._formEditComponent);
+  }
+
+  resetView() {
+    if (this._formEdit !== FormEdit.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
+  _replaceFormToPoint() {
+    replace(this._pointListComponent, this._pointComponent, this._formEditComponent);
+    this._formEdit = FormEdit.DEFAULT;
+    document.removeEventListener('keydown', this._onEscapeKeyDown);
+  }
+
+  _replacePointToForm() {
+    replace(this._pointListComponent, this._formEditComponent, this._pointComponent);
+    this._changeMode();
+    this._formEdit = FormEdit.EDITING;
+  }
+
+  _handlePointClick() {
+    this._replacePointToForm();
+    document.addEventListener('keydown', this._onEscapeKeyDown);
+  }
+
+  _handleFormEditClick() {
+    this._replaceFormToPoint();
+  }
+
+  _handleFormEditSubmit(point) {
+    this._changeData(point);
+    this._replaceFormToPoint();
+  }
+
+  _handleFavouriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavourite: !this._point.isFavourite,
+        },
+      ),
+    );
+  }
+
+  _onEscapeKeyDown(evt) {
+    if (isEscapeEvent(evt)) {
+      evt.preventDefault();
+
+      this._replaceFormToPoint();
+    }
+  }
+}
+

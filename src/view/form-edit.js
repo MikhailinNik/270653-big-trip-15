@@ -4,7 +4,7 @@ import { createDestinationTemplate } from '@view/form-edit-destination';
 import AbstarctView from '@/view/abstract';
 
 
-export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = []) => {
+export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = {}) => {
   const {
     type = '',
     destination = [],
@@ -118,6 +118,6 @@ export default class FormEdit extends AbstarctView{
 
   _onEventEditSubmit(evt) {
     evt.preventDefault();
-    this._callback.submit();
+    this._callback.submit(this._point);
   }
 }

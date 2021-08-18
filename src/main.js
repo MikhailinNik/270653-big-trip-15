@@ -1,64 +1,25 @@
 import { points, destinations, pointTypeToOffers } from '@mock/data';
-import { render, replace } from '@utils/dom';
-import { RenderPosition } from '@utils/const';
-import { isEscapeEvent } from '@utils/util';
+import { render, RenderPosition } from '@utils/dom';
 import MenuVeiw from '@view/menu';
 import FilterView from '@view/filter';
 import TripInfoView from '@view/trip-info';
-import SortView from '@view/sort';
-import PointListView from '@view/point-list';
-import FormEditView from '@view/form-edit';
-import WaypointView from '@view/waypoint';
-import ListEmptyView from '@/view/list-empty';
+
+import PointListPresenter from '@presenter/point-list.js';
 
 const siteHeaderContainer = document.querySelector('.page-header');
 const siteContainer = siteHeaderContainer.querySelector('.trip-main');
-render(siteContainer, new TripInfoView(), RenderPosition.AFTERBEGIN);
+render(siteContainer, new TripInfoView(), RenderPosition.AFTER_BEGIN);
 
 const controlsNavigation = siteHeaderContainer.querySelector('.trip-controls__navigation');
-render(controlsNavigation, new MenuVeiw(), RenderPosition.BEFOREEND);
+render(controlsNavigation, new MenuVeiw(), RenderPosition.BEFORE_END);
 
 const controlsFilters = siteHeaderContainer.querySelector('.trip-controls__filters');
-render(controlsFilters, new FilterView(), RenderPosition.AFTERBEGIN);
+render(controlsFilters, new FilterView(), RenderPosition.AFTER_BEGIN);
 
 const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');
 
-const pointListComponent = new PointListView();
-render(mainEvents, pointListComponent, RenderPosition.BEFOREEND);
+const pointPresenter = new PointListPresenter(mainEvents);
+pointPresenter.init(points, destinations, pointTypeToOffers);
 
-for (const point of points) {
-  const waypointComponent = new WaypointView(point);
-  const formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
-
-  const onEscapeKeyDown = (evt) => {
-    if (isEscapeEvent(evt)) {
-      evt.preventDefault();
-
-      replace(pointListComponent, waypointComponent, formEditComponent);
-      document.removeEventListener('keydown', onEscapeKeyDown);
-    }
-  };
-
-  waypointComponent.setOnclick(() => {
-    replace(pointListComponent, formEditComponent, waypointComponent);
-    document.addEventListener('keydown', onEscapeKeyDown);
-  });
-
-  formEditComponent.setOnClick(() => {
-    replace(pointListComponent, waypointComponent, formEditComponent);
-    document.addEventListener('keydown', onEscapeKeyDown);
-  });
-
-  formEditComponent.setOnFormSubmit(() => {
-    replace(pointListComponent, waypointComponent, formEditComponent);
-    document.removeEventListener('keydown', onEscapeKeyDown);
-  });
-
-  render(pointListComponent, waypointComponent, RenderPosition.BEFOREEND);
-}
-
-points.length === 0
-  ? render(mainEvents, new ListEmptyView(), RenderPosition.AFTERBEGIN)
-  : render(mainEvents, new SortView(), RenderPosition.AFTERBEGIN);
 
