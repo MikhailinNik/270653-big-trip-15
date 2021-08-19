@@ -47,7 +47,7 @@ const allOffers = [
 
 const points = [
   {
-    basePrice: 1100,
+    basePrice: 110,
     dateFrom: new Date('2019-07-10T22:56:56.845Z'),
     dateTo: new Date('2019-07-12T22:58:56.845Z'),
     destination: destinations[0],
@@ -69,7 +69,7 @@ const points = [
   {
     basePrice: 900,
     dateFrom: new Date('2019-07-10T10:20:56.845Z'),
-    dateTo: new Date('2019-07-11T04:15:56.845Z'),
+    dateTo: new Date('2019-07-15T04:15:56.845Z'),
     destination: destinations[1],
     id: '1',
     isFavourite: false,

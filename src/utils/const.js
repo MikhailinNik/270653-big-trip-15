@@ -11,13 +11,20 @@ const KeyboardKey = {
   ESC: 'Esc',
 };
 
-const FormEdit = {
+const FormEditMode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+};
+
+const SortType = {
+  DEFAULT: 'default',
+  TIME: 'time',
+  PRICE: 'price',
 };
 
 export {
   DateFormat,
   KeyboardKey,
-  FormEdit
+  FormEditMode,
+  SortType
 };

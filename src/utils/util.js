@@ -40,6 +40,17 @@ const updateItemById = (items, update) => {
   ];
 };
 
+const getMilliseconds = (point) => point.dateTo - point.dateFrom;
+
+const sortTime = (firstPoint, secondPoint) => {
+  const firstDate = getMilliseconds(firstPoint);
+  const secondDate = getMilliseconds(secondPoint);
+
+  return secondDate - firstDate;
+};
+
+const sortPrice = (firstPrice, secondPrice) => secondPrice.basePrice - firstPrice.basePrice;
+
 export {
   getDurationToMilliseconds,
   createFormatForDate,
@@ -48,5 +59,7 @@ export {
   getLeadingZero,
   isEscapeEvent,
   remove,
-  updateItemById
+  updateItemById,
+  sortTime,
+  sortPrice
 };
