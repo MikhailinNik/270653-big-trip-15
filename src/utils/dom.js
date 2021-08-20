@@ -31,12 +31,12 @@ const createElement = (template) => {
   return newContainer.firstElementChild;
 };
 
-const replace = (place, secondElement, firstElement) => {
+const replace = (place, secondItem, firstItem) => {
   if (place instanceof Abstract) {
     place = place.getElement();
   }
 
-  return place.replaceChild(secondElement.getElement(), firstElement.getElement());
+  return place.replaceChild(secondItem.getElement(), firstItem.getElement());
 };
 
 export {
