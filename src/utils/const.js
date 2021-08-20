@@ -16,15 +16,15 @@ const FormEditMode = {
   EDITING: 'EDITING',
 };
 
-const SortType = {
-  DEFAULT: 'default',
-  TIME: 'time',
-  PRICE: 'price',
+const InputValueForSort = {
+  SORT_DAY: 'sort-day',
+  SORT_TIME: 'sort-time',
+  SORT_PRICE: 'sort-price',
 };
 
 export {
   DateFormat,
   KeyboardKey,
   FormEditMode,
-  SortType
+  InputValueForSort
 };

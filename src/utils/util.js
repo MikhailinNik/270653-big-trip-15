@@ -40,16 +40,16 @@ const updateItemById = (items, update) => {
   ];
 };
 
-const getMilliseconds = (point) => point.dateTo - point.dateFrom;
+const getPointDuration = (point) => point.dateTo - point.dateFrom;
 
-const sortTime = (firstPoint, secondPoint) => {
-  const firstDate = getMilliseconds(firstPoint);
-  const secondDate = getMilliseconds(secondPoint);
+const getTimeForSort = (firstPoint, secondPoint) => {
+  const firstDate = getPointDuration(firstPoint);
+  const secondDate = getPointDuration(secondPoint);
 
   return secondDate - firstDate;
 };
 
-const sortPrice = (firstPrice, secondPrice) => secondPrice.basePrice - firstPrice.basePrice;
+const getPriceForSort = (firstPrice, secondPrice) => secondPrice.basePrice - firstPrice.basePrice;
 
 export {
   getDurationToMilliseconds,
@@ -60,6 +60,6 @@ export {
   isEscapeEvent,
   remove,
   updateItemById,
-  sortTime,
-  sortPrice
+  getTimeForSort,
+  getPriceForSort
 };
