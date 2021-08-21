@@ -17,9 +17,9 @@ const FormEditMode = {
 };
 
 const InputValueForSort = {
-  SORT_DAY: 'sort-day',
-  SORT_TIME: 'sort-time',
-  SORT_PRICE: 'sort-price',
+  DAY: 'sort-day',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
 };
 
 export {
