@@ -1,16 +1,16 @@
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
-import AbstarctView from '@/view/abstract';
+import SmartView from '@/view/smart';
 
 
-export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = {}) => {
+export const createPointFormTemplate = (data, destinations = [], pointTypeToOffers = {}) => {
   const {
     type = '',
     destination = [],
     basePrice = 0,
     offers = [],
-  } = point;
+  } = data;
 
   const typeOffers = pointTypeToOffers[type] || [];
 
@@ -27,12 +27,12 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
             src="img/icons/${type}.png" alt="Event ${type} icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-          <div class="event__type-list">
-            <fieldset class="event__type-group">
-              <legend class="visually-hidden">Event type</legend>
-                ${createPointTypeTemplate(type)}
-            </fieldset>
-          </div>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                  ${createPointTypeTemplate(type)}
+              </fieldset>
+            </div> 
         </div>
 
         <div class="event__field-group  event__field-group--destination">
@@ -43,7 +43,7 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-        ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
+        ${destinations.map(({ name }) => `<option value="${name}"></option>`).join('')}
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -86,29 +86,37 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
   </li>`);
 };
 
-export default class FormEdit extends AbstarctView{
-  constructor(point, destinations, offers) {
+export default class FormEdit extends SmartView {
+  constructor(data, destinations, offers) {
     super();
-    this._point = point;
+    this._data = data;
     this._destinations = destinations;
     this._offers = offers;
 
+    this._onEventTypeChange = this._onEventTypeChange.bind(this);
     this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
+    this._onDestinationChange = this._onDestinationChange.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._point, this._destinations, this._offers);
+    return createPointFormTemplate(this._data, this._destinations, this._offers);
   }
 
   setOnClick(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
+    this.getElement()
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this._onRollUpButtonClick);
   }
 
   setOnFormSubmit(callback) {
     this._callback.submit = callback;
-    this.getElement().querySelector('.event--edit').addEventListener('submit', this._onEventEditSubmit);
+    this.getElement()
+      .querySelector('.event--edit')
+      .addEventListener('submit', this._onEventEditSubmit);
   }
 
   _onRollUpButtonClick(evt) {
@@ -118,6 +126,48 @@ export default class FormEdit extends AbstarctView{
 
   _onEventEditSubmit(evt) {
     evt.preventDefault();
-    this._callback.submit(this._point);
+    this._callback.submit(this._data, this._destinations, this._offers);
   }
+
+  _onEventTypeChange(evt) {
+    if (evt.target.classList.contains('event-type-toggle')) {
+      return;
+    }
+
+    this.updateData({
+      offers: [evt.target.value],
+      type: evt.target.value,
+    });
+  }
+
+  _onDestinationChange(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      destination:
+       {
+         description: this._destinations[0].description,
+         name: evt.target.value,
+         pictures: this._destinations[0].pictures,
+       },
+    }, true);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._onEventTypeChange);
+
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._onDestinationChange);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setOnClick(this._callback.click);
+    this.setOnFormSubmit(this._callback.submit);
+  }
+
 }
