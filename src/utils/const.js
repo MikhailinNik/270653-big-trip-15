@@ -22,9 +22,15 @@ const InputValueForSort = {
   PRICE: 'sort-price',
 };
 
+const FormMode = {
+  EDIT: 'EDIT',
+  ADD: 'ADD',
+};
+
 export {
   DateFormat,
   KeyboardKey,
   FormEditMode,
-  InputValueForSort
+  InputValueForSort,
+  FormMode
 };

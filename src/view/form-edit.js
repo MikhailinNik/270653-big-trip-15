@@ -1,20 +1,28 @@
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
+import { FormMode } from '@utils/const';
 import SmartView from '@/view/smart';
 
 
-export const createPointFormTemplate = (data, destinations = [], pointTypeToOffers = {}) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = {}) => {
   const {
     type = '',
-    destination = [],
+    destination = {
+      name: '',
+      description: '',
+      photos: [],
+    },
     basePrice = 0,
-    offers = [],
+    offers,
+    isEdit,
   } = data;
 
-  const typeOffers = pointTypeToOffers[type] || [];
+  const hasDescription = destination.name !== '';
+  const renderOffers = getOffers(offers, pointTypeToOffers[data.type] || []);
+  // const typeOffers = pointTypeToOffers[type] || [];
 
-  const renderOffers = getOffers(offers, typeOffers);
+  // const renderOffers = getOffers(offers, typeOffers);
 
   return (
     `<li class="trip-events__item">
@@ -43,7 +51,7 @@ export const createPointFormTemplate = (data, destinations = [], pointTypeToOffe
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-        ${destinations.map(({ name }) => `<option value="${name}"></option>`).join('')}
+        <option value="${destination.name}"></option>
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -64,9 +72,14 @@ export const createPointFormTemplate = (data, destinations = [], pointTypeToOffe
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-        </button>
+        ${isEdit
+          ? (
+            `<button class="event__rollup-btn" type="button">
+              <span class="visually-hidden">Open event</span>
+            </button>`
+            )
+          : ''
+        }
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -78,18 +91,21 @@ export const createPointFormTemplate = (data, destinations = [], pointTypeToOffe
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
-          ${createDestinationTemplate(destination)}
-        </section>
+        ${hasDescription ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
   </li>`);
 };
 
 export default class FormEdit extends SmartView {
-  constructor(data, destinations, offers) {
+  constructor(point, destinations, offers, mode = FormMode.EDIT) {
     super();
-    this._data = data;
+
+    this._data = {
+      ...point,
+      isEdit: mode === FormMode.EDIT,
+    };
+
     this._destinations = destinations;
     this._offers = offers;
 
@@ -102,7 +118,7 @@ export default class FormEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._data, this._destinations, this._offers);
+    return createPointFormTemplate(this._data);
   }
 
   setOnClick(callback) {
@@ -126,7 +142,13 @@ export default class FormEdit extends SmartView {
 
   _onEventEditSubmit(evt) {
     evt.preventDefault();
-    this._callback.submit(this._data, this._destinations, this._offers);
+
+    const point = {...this._data};
+
+    delete point.isEdit;
+    delete point.renderOffers;
+
+    this._callback.submit(point);
   }
 
   _onEventTypeChange(evt) {
@@ -134,23 +156,20 @@ export default class FormEdit extends SmartView {
       return;
     }
 
-    this.updateData({
-      offers: [evt.target.value],
-      type: evt.target.value,
-    });
+    this.updateData({ type: evt.target.value }, false);
   }
 
   _onDestinationChange(evt) {
     evt.preventDefault();
 
-    this.updateData({
-      destination:
-       {
-         description: this._destinations[0].description,
-         name: evt.target.value,
-         pictures: this._destinations[0].pictures,
-       },
-    }, true);
+    const name = evt.target.value;
+    const destinations = this._destinations.find((destination) => destination.name === name);
+
+    if (!destinations) {
+      return;
+    }
+
+    this.updateData({ destinations }, false);
   }
 
   _setInnerHandlers() {
