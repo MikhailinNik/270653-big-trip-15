@@ -100,7 +100,7 @@ export default class Waypoint {
         {},
         this._point,
         {
-          isFavourite: !this._point.isFavourite,
+          isFavourite: this._point.isFavourite,
         },
       ),
     );

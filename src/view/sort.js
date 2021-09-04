@@ -33,7 +33,7 @@ export default class Sort extends AbstractView {
   constructor() {
     super();
 
-    this._onTypeChange = this._onTypeChange.bind(this);
+    this._onTripClick = this._onTripClick.bind(this);
   }
 
   getTemplate() {
@@ -41,11 +41,11 @@ export default class Sort extends AbstractView {
   }
 
   setOnTypeChange(callback) {
-    this._callback.change = callback;
-    this.getElement().addEventListener('click', this._onTypeChange);
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._onTripClick);
   }
 
-  _onTypeChange(evt) {
+  _onTripClick(evt) {
     evt.preventDefault();
 
     if (evt.target.tagName !== 'LABEL') {
@@ -58,6 +58,6 @@ export default class Sort extends AbstractView {
     const currentType = evt.target.previousElementSibling;
     currentType.checked = true;
 
-    this._callback.change(currentType.value);
+    this._callback.click(currentType.value);
   }
 }

@@ -1,20 +1,25 @@
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
-import AbstarctView from '@/view/abstract';
+import { FormMode } from '@utils/const';
+import SmartView from '@/view/smart';
 
 
-export const createPointFormTemplate = (point, destinations = [], pointTypeToOffers = {}) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations) => {
   const {
     type = '',
-    destination = [],
+    destination = {
+      name: '',
+      description: '',
+      photos: [],
+    },
     basePrice = 0,
-    offers = [],
-  } = point;
+    offers,
+    isEdit,
+  } = data;
 
-  const typeOffers = pointTypeToOffers[type] || [];
-
-  const renderOffers = getOffers(offers, typeOffers);
+  const hasDescription = destination.name !== '';
+  const renderOffers = getOffers(offers, pointTypeToOffers[data.type] || []);
 
   return (
     `<li class="trip-events__item">
@@ -24,15 +29,15 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" 
-            src="img/icons/${type}.png" alt="Event type icon">
+            src="img/icons/${type}.png" alt="Event ${type} icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-          <div class="event__type-list">
-            <fieldset class="event__type-group">
-              <legend class="visually-hidden">Event type</legend>
-                ${createPointTypeTemplate(type)}
-            </fieldset>
-          </div>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                  ${createPointTypeTemplate(type)}
+              </fieldset>
+            </div> 
         </div>
 
         <div class="event__field-group  event__field-group--destination">
@@ -43,7 +48,8 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-        ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
+          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
+        
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -59,14 +65,17 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="0" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-        </button>
+    ${isEdit
+      ? (
+        `<button class="event__rollup-btn" type="button">
+              <span class="visually-hidden">Open event</span>
+            </button>`
+      ) : ''}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -78,37 +87,55 @@ export const createPointFormTemplate = (point, destinations = [], pointTypeToOff
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
-          ${createDestinationTemplate(destination)}
-        </section>
+        ${hasDescription ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
   </li>`);
 };
 
-export default class FormEdit extends AbstarctView{
-  constructor(point, destinations, offers) {
+export default class FormEdit extends SmartView {
+  constructor(point, destinations, offers, mode = FormMode.EDIT) {
     super();
-    this._point = point;
+
+    this._data = {
+      ...point,
+      isEdit: mode === FormMode.EDIT,
+    };
+
     this._destinations = destinations;
     this._offers = offers;
 
+    this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
     this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
+    this._onDestinationChange = this._onDestinationChange.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._point, this._destinations, this._offers);
+    return createPointFormTemplate(this._data, this._offers, this._destinations);
   }
 
   setOnClick(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollUpButtonClick);
+    this.getElement()
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this._onRollUpButtonClick);
   }
 
   setOnFormSubmit(callback) {
     this._callback.submit = callback;
-    this.getElement().querySelector('.event--edit').addEventListener('submit', this._onEventEditSubmit);
+    this.getElement()
+      .querySelector('.event--edit')
+      .addEventListener('submit', this._onEventEditSubmit);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setOnClick(this._callback.click);
+    this.setOnFormSubmit(this._callback.submit);
   }
 
   _onRollUpButtonClick(evt) {
@@ -116,8 +143,47 @@ export default class FormEdit extends AbstarctView{
     this._callback.click();
   }
 
+  _setInnerHandlers() {
+    const template = this.getElement();
+
+    template
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._onTypeGroupChange);
+
+    template
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._onDestinationChange);
+  }
+
   _onEventEditSubmit(evt) {
     evt.preventDefault();
-    this._callback.submit(this._point);
+
+    const point = {...this._data};
+
+    delete point.isEdit;
+    delete point.renderOffers;
+
+    this._callback.submit(point);
+  }
+
+  _onTypeGroupChange(evt) {
+    if (evt.target.classList.contains('event-type-toggle')) {
+      return;
+    }
+
+    this.updateData({ type: evt.target.value }, false);
+  }
+
+  _onDestinationChange(evt) {
+    evt.preventDefault();
+
+    const name = evt.target.value;
+    const destinations = this._destinations.find((destination) => destination.name === name);
+
+    if (!destinations) {
+      return;
+    }
+
+    this.updateData({ destinations }, false);
   }
 }
