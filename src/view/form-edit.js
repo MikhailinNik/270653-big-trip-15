@@ -176,7 +176,7 @@ export default class FormEdit extends SmartView {
 
   _onDestinationChange(evt) {
     evt.preventDefault();
-debugger
+
     const name = evt.target.value;
     const destinations = this._destinations.find((destination) => destination.name === name);
 
