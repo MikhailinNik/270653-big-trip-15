@@ -43,6 +43,19 @@ const allOffers = [
       },
     ],
   },
+  {
+    typeOffer: 'bus',
+    offersType: [
+      {
+        title: 'Upgrade',
+        price: 10,
+      },
+      {
+        title: 'Upgrade to a comfort bus class',
+        price: 30,
+      },
+    ],
+  },
 ];
 
 const points = [

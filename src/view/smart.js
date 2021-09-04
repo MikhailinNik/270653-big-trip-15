@@ -6,7 +6,7 @@ export default class Smart extends Abstract {
     this._data = {};
   }
 
-  updateData(update, justDataUpdating) {
+  updateData(update, justDataUpdating = true) {
     if (!update) {
       return;
     }
@@ -25,13 +25,13 @@ export default class Smart extends Abstract {
   }
 
   updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
+    const prevTemplate = this.getElement();
+    const parent = prevTemplate.parentElement;
     this.removeElement();
 
-    const newElement = this.getElement();
+    const newTemplate = this.getElement();
 
-    parent.replaceChild(newElement, prevElement);
+    parent.replaceChild(newTemplate, prevTemplate);
 
     this.restoreHandlers();
   }

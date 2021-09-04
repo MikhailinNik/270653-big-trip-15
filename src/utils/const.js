@@ -16,7 +16,7 @@ const FormEditMode = {
   EDITING: 'EDITING',
 };
 
-const InputValueForSort = {
+const SortType = {
   DAY: 'sort-day',
   TIME: 'sort-time',
   PRICE: 'sort-price',
@@ -31,6 +31,6 @@ export {
   DateFormat,
   KeyboardKey,
   FormEditMode,
-  InputValueForSort,
+  SortType,
   FormMode
 };

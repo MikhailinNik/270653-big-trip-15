@@ -4,7 +4,7 @@ import ListEmptyView from '@/view/list-empty';
 import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
 import { updateItemById, getTimeForSort, getPriceForSort } from '@utils/util';
-import { InputValueForSort } from '@utils/const';
+import { SortType } from '@utils/const';
 
 export default class PointList {
   constructor(container) {
@@ -14,7 +14,7 @@ export default class PointList {
     this._sortComponent = new SortView();
     this._listComponent = new PointListView();
     this._noPointsComponent = new ListEmptyView();
-    this._currentSortType = InputValueForSort.DAY;
+    this._currentSortType = SortType.DAY;
 
     this._changeData = this._changeData.bind(this);
     this._resetEditMode = this._resetEditMode.bind(this);
@@ -77,10 +77,10 @@ export default class PointList {
 
   _sortPoints(sortType) {
     switch(sortType) {
-      case InputValueForSort.TIME:
+      case SortType.TIME:
         this._points.sort(getTimeForSort);
         break;
-      case InputValueForSort.PRICE:
+      case SortType.PRICE:
         this._points.sort(getPriceForSort);
         break;
       default:

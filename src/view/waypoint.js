@@ -56,12 +56,16 @@ export default class Waypoint extends AbstarctView{
 
   setOnEditClick(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._onRollupButtonClick);
+    this.getElement()
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this._onRollupButtonClick);
   }
 
   setOnFavouritePointClick(callback) {
     this._callback.favouriteClick = callback;
-    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._onFavouriteButtonClick);
+    this.getElement()
+      .querySelector('.event__favorite-btn')
+      .addEventListener('click', this._onFavouriteButtonClick);
   }
 
   _onFavouriteButtonClick(evt) {

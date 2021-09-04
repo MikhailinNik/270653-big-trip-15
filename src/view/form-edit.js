@@ -5,7 +5,7 @@ import { FormMode } from '@utils/const';
 import SmartView from '@/view/smart';
 
 
-export const createPointFormTemplate = (data, pointTypeToOffers = {}) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations) => {
   const {
     type = '',
     destination = {
@@ -20,9 +20,6 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}) => {
 
   const hasDescription = destination.name !== '';
   const renderOffers = getOffers(offers, pointTypeToOffers[data.type] || []);
-  // const typeOffers = pointTypeToOffers[type] || [];
-
-  // const renderOffers = getOffers(offers, typeOffers);
 
   return (
     `<li class="trip-events__item">
@@ -51,7 +48,8 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}) => {
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-        <option value="${destination.name}"></option>
+          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
+        
         </div>
 
         <div class="event__field-group  event__field-group--time">
@@ -67,19 +65,17 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="0" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-        ${isEdit
-          ? (
-            `<button class="event__rollup-btn" type="button">
+    ${isEdit
+      ? (
+        `<button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Open event</span>
             </button>`
-            )
-          : ''
-        }
+      ) : ''}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
@@ -109,7 +105,7 @@ export default class FormEdit extends SmartView {
     this._destinations = destinations;
     this._offers = offers;
 
-    this._onEventTypeChange = this._onEventTypeChange.bind(this);
+    this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
     this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
@@ -118,7 +114,7 @@ export default class FormEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._data);
+    return createPointFormTemplate(this._data, this._offers, this._destinations);
   }
 
   setOnClick(callback) {
@@ -135,9 +131,28 @@ export default class FormEdit extends SmartView {
       .addEventListener('submit', this._onEventEditSubmit);
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setOnClick(this._callback.click);
+    this.setOnFormSubmit(this._callback.submit);
+  }
+
   _onRollUpButtonClick(evt) {
     evt.preventDefault();
     this._callback.click();
+  }
+
+  _setInnerHandlers() {
+    const template = this.getElement();
+
+    template
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._onTypeGroupChange);
+
+    template
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._onDestinationChange);
   }
 
   _onEventEditSubmit(evt) {
@@ -151,7 +166,7 @@ export default class FormEdit extends SmartView {
     this._callback.submit(point);
   }
 
-  _onEventTypeChange(evt) {
+  _onTypeGroupChange(evt) {
     if (evt.target.classList.contains('event-type-toggle')) {
       return;
     }
@@ -161,7 +176,7 @@ export default class FormEdit extends SmartView {
 
   _onDestinationChange(evt) {
     evt.preventDefault();
-
+debugger
     const name = evt.target.value;
     const destinations = this._destinations.find((destination) => destination.name === name);
 
@@ -171,22 +186,4 @@ export default class FormEdit extends SmartView {
 
     this.updateData({ destinations }, false);
   }
-
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.event__type-group')
-      .addEventListener('change', this._onEventTypeChange);
-
-    this.getElement()
-      .querySelector('.event__input--destination')
-      .addEventListener('change', this._onDestinationChange);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-
-    this.setOnClick(this._callback.click);
-    this.setOnFormSubmit(this._callback.submit);
-  }
-
 }
