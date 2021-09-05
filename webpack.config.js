@@ -15,6 +15,15 @@ module.exports = {
     contentBase: publicPath,
     watchContentBase: true,
   },
+  
+  module: {
+    rules: [
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+    ]
+  },
 
   resolve: {
     alias: {
@@ -24,5 +33,5 @@ module.exports = {
       '@mock': path.resolve(__dirname, 'src/mock'),
       '@utils': path.resolve(__dirname, 'src/utils'),
     }
-  }
+  },
 };

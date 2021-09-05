@@ -3,9 +3,13 @@ import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
 import { FormMode } from '@utils/const';
 import SmartView from '@/view/smart';
+import { createFormatForDate } from '@utils/util';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 
-export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = [], destinations = []) => {
+
   const {
     type = '',
     destination = {
@@ -13,6 +17,8 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
       description: '',
       photos: [],
     },
+    dateFrom = null,
+    dateTo = null,
     basePrice = 0,
     offers,
     isEdit,
@@ -48,16 +54,24 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
+          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join(' ')}
         
         </div>
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${createFormatForDate(dateFrom, 'DD/MM/YYYY hh:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time"
+            id="event-end-time-1"
+            type="text"
+            name="event-end-time"
+            value="${createFormatForDate(dateTo, 'DD/MM/YYYY hh:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -80,13 +94,10 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
           <div class="event__available-offers">
-          
             ${createPointOfferTemplate(renderOffers)}
           </div>
         </section>
-
         ${hasDescription ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
@@ -104,13 +115,19 @@ export default class FormEdit extends SmartView {
 
     this._destinations = destinations;
     this._offers = offers;
+    this._flatpickerDateFrom = null;
+    this._flatpickerDateTo = null;
 
     this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
     this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
+    this._onDateFromChange = this._onDateFromChange.bind(this);
+    this._onDateToChange = this._onDateToChange.bind(this);
 
     this._setInnerHandlers();
+    this._setDateFrompicker();
+    this._setDateTopicker();
   }
 
   getTemplate() {
@@ -136,6 +153,40 @@ export default class FormEdit extends SmartView {
 
     this.setOnClick(this._callback.click);
     this.setOnFormSubmit(this._callback.submit);
+  }
+
+  _setDateFrompicker() {
+    if(this._flatpickerDateFrom) {
+      this._flatpickerDateFrom.destroy();
+      this._flatpickerDateFrom = null;
+    }
+
+    this._flatpickerDateFrom = flatpickr(
+      this.getElement()
+        .querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/Y h:i',
+        minDate: this._data.dateFrom,
+        onChange: this._onDateFromChange,
+      },
+    );
+  }
+
+  _setDateTopicker() {
+    if(this._flatpickerDateTo) {
+      this._flatpickerDateTo.destroy();
+      this._flatpickerDateTo = null;
+    }
+
+    this._flatpickerDateTo = flatpickr(
+      this.getElement()
+        .querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/Y h:i',
+        maxDate: this._data.dateTo,
+        onChange: this._onDateToChange,
+      },
+    );
   }
 
   _onRollUpButtonClick(evt) {
@@ -178,12 +229,24 @@ export default class FormEdit extends SmartView {
     evt.preventDefault();
 
     const name = evt.target.value;
-    const destinations = this._destinations.find((destination) => destination.name === name);
+    const destination = this._destinations.find((obj) => obj.name === name);
 
-    if (!destinations) {
+    if (!destination) {
       return;
     }
 
-    this.updateData({ destinations }, false);
+    this.updateData({ destination }, true);
+  }
+
+  _onDateFromChange([userDate]) {
+    this.updateData({
+      dateFrom: this._flatpickerDateFrom.set('minDate', userDate),
+    }, false);
+  }
+
+  _onDateToChange([userDate]) {
+    this.updateData({
+      dateTo: this._flatpickerDateTo.set('maxDate', userDate),
+    }), false;
   }
 }
