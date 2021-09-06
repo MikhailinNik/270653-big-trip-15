@@ -1,11 +1,15 @@
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
-import { FormMode } from '@utils/const';
+import { FormMode, DateFormat } from '@utils/const';
 import SmartView from '@/view/smart';
+import { formatDate } from '@utils/util';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 
-export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations = []) => {
+
   const {
     type = '',
     destination = {
@@ -13,6 +17,8 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
       description: '',
       photos: [],
     },
+    dateFrom = null,
+    dateTo = null,
     basePrice = 0,
     offers,
     isEdit,
@@ -54,10 +60,18 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${formatDate(dateFrom, DateFormat.DATE_TIME)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time"
+            id="event-end-time-1"
+            type="text"
+            name="event-end-time"
+            value="${formatDate(dateTo, DateFormat.DATE_TIME)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -65,7 +79,10 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="0" value="${basePrice}">
+          <input class="event__input  event__input--price" 
+            id="event-price-1" type="number" 
+            name="event-price" min="0" 
+            value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -80,13 +97,10 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
           <div class="event__available-offers">
-          
             ${createPointOfferTemplate(renderOffers)}
           </div>
         </section>
-
         ${hasDescription ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
@@ -104,13 +118,20 @@ export default class FormEdit extends SmartView {
 
     this._destinations = destinations;
     this._offers = offers;
+    this._flatpickerDateFrom = null;
+    this._flatpickerDateTo = null;
 
     this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
-    this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
+    this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
+    this._onPriceChange = this._onPriceChange.bind(this);
+    this._onDateFromChange = this._onDateFromChange.bind(this);
+    this._onDateToChange = this._onDateToChange.bind(this);
 
     this._setInnerHandlers();
+    this._setDateFromPicker();
+    this._setDateToPicker();
   }
 
   getTemplate() {
@@ -121,7 +142,7 @@ export default class FormEdit extends SmartView {
     this._callback.click = callback;
     this.getElement()
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this._onRollUpButtonClick);
+      .addEventListener('click', this._onRollupButtonClick);
   }
 
   setOnFormSubmit(callback) {
@@ -132,13 +153,51 @@ export default class FormEdit extends SmartView {
   }
 
   restoreHandlers() {
+    this._setDateFromPicker();
+    this._setDateToPicker();
     this._setInnerHandlers();
 
     this.setOnClick(this._callback.click);
     this.setOnFormSubmit(this._callback.submit);
   }
 
-  _onRollUpButtonClick(evt) {
+  _setDateFromPicker() {
+    if(this._flatpickerDateFrom !== null) {
+      this._flatpickerDateFrom.destroy();
+      this._flatpickerDateFrom = null;
+    }
+
+    this._flatpickerDateFrom = flatpickr(
+      this.getElement()
+        .querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
+        minDate: this._data.dateFrom,
+        onChange: this._onDateFromChange,
+      },
+    );
+  }
+
+  _setDateToPicker() {
+    if(this._flatpickerDateTo !== null) {
+      this._flatpickerDateTo.destroy();
+      this._flatpickerDateTo = null;
+    }
+
+    this._flatpickerDateTo = flatpickr(
+      this.getElement()
+        .querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
+        maxDate: this._data.dateTo,
+        onChange: this._onDateToChange,
+      },
+    );
+  }
+
+  _onRollupButtonClick(evt) {
     evt.preventDefault();
     this._callback.click();
   }
@@ -153,6 +212,10 @@ export default class FormEdit extends SmartView {
     template
       .querySelector('.event__input--destination')
       .addEventListener('change', this._onDestinationChange);
+
+    template
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._onPriceChange);
   }
 
   _onEventEditSubmit(evt) {
@@ -178,12 +241,36 @@ export default class FormEdit extends SmartView {
     evt.preventDefault();
 
     const name = evt.target.value;
-    const destinations = this._destinations.find((destination) => destination.name === name);
+    const destination = this._destinations.find((obj) => obj.name === name);
 
-    if (!destinations) {
+    if (!destination) {
       return;
     }
 
-    this.updateData({ destinations }, false);
+    this.updateData({ destination }, true);
+  }
+
+  _onPriceChange(evt) {
+    const price = evt.target.valueAsNumber;
+
+    this.updateData({
+      basePrice: price,
+    }, false);
+  }
+
+  _onDateFromChange([userDate]) {
+    this._flatpickerDateFrom.set('minDate', userDate);
+
+    this.updateData({
+      dateFrom: userDate,
+    }, true);
+  }
+
+  _onDateToChange([userDate]) {
+    this._flatpickerDateTo.set('maxDate', userDate);
+
+    this.updateData({
+      dateTo: userDate,
+    }, true);
   }
 }

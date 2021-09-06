@@ -4,6 +4,7 @@ const DateFormat = {
   DAY: 'DD',
   HOUR: 'HH',
   MINUTE: 'mm',
+  DATE_TIME: 'DD/MM/YYYY hh:mm',
 };
 
 const KeyboardKey = {
