@@ -8,7 +8,7 @@ const ESCAPE_KEYS = Object.values(KeyboardKey);
 
 const getDurationToMilliseconds = (millisecond) => dayjs.duration(millisecond).$d;
 
-const createFormatForDate = (date, format) => dayjs(date).format(format);
+const formatDate = (date, format) => dayjs(date).format(format);
 
 const getUpperCaseFirstLetter = (type) => type[0].toUpperCase() + type.slice(1);
 const getLowerCaseFirstLetter = (type) => type[0].toLowerCase() + type.slice(1);
@@ -53,7 +53,7 @@ const getPriceForSort = (firstPrice, secondPrice) => secondPrice.basePrice - fir
 
 export {
   getDurationToMilliseconds,
-  createFormatForDate,
+  formatDate,
   getUpperCaseFirstLetter,
   getLowerCaseFirstLetter,
   getLeadingZero,

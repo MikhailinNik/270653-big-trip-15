@@ -1,14 +1,14 @@
 import { getOffers, createPointOfferTemplate } from '@view/form-offer';
 import { createPointTypeTemplate } from '@view/form-edit-type';
 import { createDestinationTemplate } from '@view/form-edit-destination';
-import { FormMode } from '@utils/const';
+import { FormMode, DateFormat } from '@utils/const';
 import SmartView from '@/view/smart';
-import { createFormatForDate } from '@utils/util';
+import { formatDate } from '@utils/util';
 import flatpickr from 'flatpickr';
-import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/flatpickr.min.css';
 
 
-export const createPointFormTemplate = (data, pointTypeToOffers = [], destinations = []) => {
+export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations = []) => {
 
   const {
     type = '',
@@ -54,7 +54,7 @@ export const createPointFormTemplate = (data, pointTypeToOffers = [], destinatio
         name="event-destination" 
         value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join(' ')}
+          ${destinations.map(({ name }) => `<option value="${name}">${name}</option>`).join('')}
         
         </div>
 
@@ -64,14 +64,14 @@ export const createPointFormTemplate = (data, pointTypeToOffers = [], destinatio
             id="event-start-time-1"
             type="text"
             name="event-start-time"
-            value="${createFormatForDate(dateFrom, 'DD/MM/YYYY hh:mm')}">
+            value="${formatDate(dateFrom, DateFormat.DATE_TIME)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time"
             id="event-end-time-1"
             type="text"
             name="event-end-time"
-            value="${createFormatForDate(dateTo, 'DD/MM/YYYY hh:mm')}">
+            value="${formatDate(dateTo, DateFormat.DATE_TIME)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -79,7 +79,10 @@ export const createPointFormTemplate = (data, pointTypeToOffers = [], destinatio
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="0" value="${basePrice}">
+          <input class="event__input  event__input--price" 
+            id="event-price-1" type="number" 
+            name="event-price" min="0" 
+            value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -119,15 +122,16 @@ export default class FormEdit extends SmartView {
     this._flatpickerDateTo = null;
 
     this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
-    this._onRollUpButtonClick = this._onRollUpButtonClick.bind(this);
+    this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
+    this._onPriceChange = this._onPriceChange.bind(this);
     this._onDateFromChange = this._onDateFromChange.bind(this);
     this._onDateToChange = this._onDateToChange.bind(this);
 
     this._setInnerHandlers();
-    this._setDateFrompicker();
-    this._setDateTopicker();
+    this._setDateFromPicker();
+    this._setDateToPicker();
   }
 
   getTemplate() {
@@ -138,7 +142,7 @@ export default class FormEdit extends SmartView {
     this._callback.click = callback;
     this.getElement()
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this._onRollUpButtonClick);
+      .addEventListener('click', this._onRollupButtonClick);
   }
 
   setOnFormSubmit(callback) {
@@ -149,14 +153,16 @@ export default class FormEdit extends SmartView {
   }
 
   restoreHandlers() {
+    this._setDateFromPicker();
+    this._setDateToPicker();
     this._setInnerHandlers();
 
     this.setOnClick(this._callback.click);
     this.setOnFormSubmit(this._callback.submit);
   }
 
-  _setDateFrompicker() {
-    if(this._flatpickerDateFrom) {
+  _setDateFromPicker() {
+    if(this._flatpickerDateFrom !== null) {
       this._flatpickerDateFrom.destroy();
       this._flatpickerDateFrom = null;
     }
@@ -165,15 +171,16 @@ export default class FormEdit extends SmartView {
       this.getElement()
         .querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/Y h:i',
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
         minDate: this._data.dateFrom,
         onChange: this._onDateFromChange,
       },
     );
   }
 
-  _setDateTopicker() {
-    if(this._flatpickerDateTo) {
+  _setDateToPicker() {
+    if(this._flatpickerDateTo !== null) {
       this._flatpickerDateTo.destroy();
       this._flatpickerDateTo = null;
     }
@@ -182,14 +189,15 @@ export default class FormEdit extends SmartView {
       this.getElement()
         .querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/Y h:i',
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
         maxDate: this._data.dateTo,
         onChange: this._onDateToChange,
       },
     );
   }
 
-  _onRollUpButtonClick(evt) {
+  _onRollupButtonClick(evt) {
     evt.preventDefault();
     this._callback.click();
   }
@@ -204,6 +212,10 @@ export default class FormEdit extends SmartView {
     template
       .querySelector('.event__input--destination')
       .addEventListener('change', this._onDestinationChange);
+
+    template
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._onPriceChange);
   }
 
   _onEventEditSubmit(evt) {
@@ -238,15 +250,27 @@ export default class FormEdit extends SmartView {
     this.updateData({ destination }, true);
   }
 
-  _onDateFromChange([userDate]) {
+  _onPriceChange(evt) {
+    const price = evt.target.valueAsNumber;
+
     this.updateData({
-      dateFrom: this._flatpickerDateFrom.set('minDate', userDate),
+      basePrice: price,
     }, false);
   }
 
-  _onDateToChange([userDate]) {
+  _onDateFromChange([userDate]) {
+    this._flatpickerDateFrom.set('minDate', userDate);
+
     this.updateData({
-      dateTo: this._flatpickerDateTo.set('maxDate', userDate),
-    }), false;
+      dateFrom: userDate,
+    }, true);
+  }
+
+  _onDateToChange([userDate]) {
+    this._flatpickerDateTo.set('maxDate', userDate);
+
+    this.updateData({
+      dateTo: userDate,
+    }, true);
   }
 }
