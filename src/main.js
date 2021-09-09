@@ -5,6 +5,7 @@ import FilterView from '@view/filter';
 import TripInfoView from '@view/trip-info';
 import PointsModel from '@model/points';
 import FilterModel from '@model/filter';
+import FilterPresenter from '@presenter/filter';
 
 import PointListPresenter from '@presenter/point-list.js';
 
@@ -21,12 +22,15 @@ const controlsNavigation = siteHeaderContainer.querySelector('.trip-controls__na
 render(controlsNavigation, new MenuVeiw(), RenderPosition.BEFORE_END);
 
 const controlsFilters = siteHeaderContainer.querySelector('.trip-controls__filters');
-render(controlsFilters, new FilterView(), RenderPosition.AFTER_BEGIN);
+// render(controlsFilters, new FilterView(), RenderPosition.AFTER_BEGIN);
 
 const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');
 
-const pointPresenter = new PointListPresenter(mainEvents, pointsModel);
+const filterPresenter = new FilterPresenter(controlsFilters, filterModel, pointsModel);
+filterPresenter.init();
+
+const pointPresenter = new PointListPresenter(mainEvents, pointsModel, filterModel);
 pointPresenter.init(destinations, pointTypeToOffers);
 
 

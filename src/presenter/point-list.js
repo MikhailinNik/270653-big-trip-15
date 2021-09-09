@@ -4,24 +4,27 @@ import ListEmptyView from '@/view/list-empty';
 import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
 import { remove, getTimeForSort, getPriceForSort } from '@utils/util';
-import { SortType, UserAction, UpdateType } from '@utils/const';
+import { SortType, UserAction, UpdateType, FilterType } from '@utils/const';
 
 export default class PointList {
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, filterModel) {
     this._container = container;
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
     this._waypointPresenter = new Map();
 
     this._sortComponent = null;
     this._listComponent = new PointListView();
     this._noPointsComponent = new ListEmptyView();
     this._currentSortType = SortType.DAY;
+    this._filterType = FilterType.EVERYTHING;
 
     this._changeData = this._changeData.bind(this);
     this._resetEditMode = this._resetEditMode.bind(this);
     this._handleTypeChange = this._handleTypeChange.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init(destinations, pointTypeToOffers) {
@@ -34,6 +37,9 @@ export default class PointList {
   }
 
   _getPoints() {
+    this._filterType = this._filterModel.getFilter();
+    const filteredPoints = filter[this._filterType](points);
+    
     switch (this._currentSortType) {
       case SortType.TIME:
         return this._pointsModel.getPoints().slice().sort(getTimeForSort);
