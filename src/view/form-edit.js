@@ -22,6 +22,7 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
     basePrice = 0,
     offers,
     isEdit,
+    isNewForm,
   } = data;
 
   const hasDescription = destination.name !== '';
@@ -86,7 +87,7 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">${isNewForm ? 'Cancel' : 'Delete'}</button>
     ${isEdit
       ? (
         `<button class="event__rollup-btn" type="button">
@@ -124,6 +125,7 @@ export default class FormEdit extends SmartView {
     this._onTypeGroupChange = this._onTypeGroupChange.bind(this);
     this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onEventEditSubmit = this._onEventEditSubmit.bind(this);
+    this._onDeleteClick = this._onDeleteClick.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
     this._onPriceChange = this._onPriceChange.bind(this);
     this._onDateFromChange = this._onDateFromChange.bind(this);
@@ -152,6 +154,13 @@ export default class FormEdit extends SmartView {
       .addEventListener('submit', this._onEventEditSubmit);
   }
 
+  setOnDeleteClick(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement()
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this._onDeleteClick);
+  }
+
   restoreHandlers() {
     this._setDateFromPicker();
     this._setDateToPicker();
@@ -159,6 +168,19 @@ export default class FormEdit extends SmartView {
 
     this.setOnClick(this._callback.click);
     this.setOnFormSubmit(this._callback.submit);
+    this.setOnDeleteClick(this._callback.deleteClick);
+  }
+
+  removeItem() {
+    super.removeItem();
+
+    if (this._flatpickerDateFrom && this._flatpickerDateTo) {
+      this._flatpickerDateFrom.destroy();
+      this._flatpickerDateTo.destroy();
+
+      this._flatpickerDateFrom = null;
+      this._flatpickerDateTo = null;
+    }
   }
 
   _setDateFromPicker() {
@@ -227,6 +249,17 @@ export default class FormEdit extends SmartView {
     delete point.renderOffers;
 
     this._callback.submit(point);
+  }
+
+  _onDeleteClick(evt) {
+    evt.preventDefault();
+debugger
+    const point = {...this._data};
+
+    delete point.isEdit;
+    delete point.renderOffers;
+
+    this._callback.deleteClick(point);
   }
 
   _onTypeGroupChange(evt) {

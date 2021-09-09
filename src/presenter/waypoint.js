@@ -2,7 +2,7 @@ import WaypointView from '@view/waypoint';
 import FormEditView from '@view/form-edit';
 import { render, replace, RenderPosition } from '@utils/dom';
 import { isEscapeEvent, remove } from '@utils/util';
-import { FormEditMode } from '@utils/const';
+import { FormEditMode, UserAction, UpdateType } from '@utils/const';
 
 export default class Waypoint {
   constructor(pointListComponent, changeData, changeMode) {
@@ -17,6 +17,7 @@ export default class Waypoint {
     this._handlePointClick = this._handlePointClick.bind(this);
     this._handleFormEditClick = this._handleFormEditClick.bind(this);
     this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._onEscapeKeyDown = this._onEscapeKeyDown.bind(this);
     this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
   }
@@ -37,6 +38,8 @@ export default class Waypoint {
     this._formEditComponent.setOnClick(this._handleFormEditClick);
 
     this._formEditComponent.setOnFormSubmit(this._handleFormEditSubmit);
+
+    this._formEditComponent.setOnDeleteClick(this._handleDeleteClick);
 
     this._pointComponent.setOnFavouritePointClick(this._handleFavouriteClick);
 
@@ -89,13 +92,27 @@ export default class Waypoint {
     this._replaceFormToPoint();
   }
 
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  }
+
   _handleFormEditSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this._replaceFormToPoint();
   }
 
   _handleFavouriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,

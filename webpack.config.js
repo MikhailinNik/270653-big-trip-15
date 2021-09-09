@@ -30,6 +30,7 @@ module.exports = {
       '@': path.resolve(__dirname, 'src'),
       '@view': path.resolve(__dirname, 'src/view'),
       '@presenter': path.resolve(__dirname, 'src/presenter'),
+      '@model': path.resolve(__dirname, 'src/model'),
       '@mock': path.resolve(__dirname, 'src/mock'),
       '@utils': path.resolve(__dirname, 'src/utils'),
     }
