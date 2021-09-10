@@ -1,6 +1,7 @@
 import FilterView from '@view/filter';
-import { remove, replace, render, RenderPosition } from '@utils/dom';
+import { replace, render, RenderPosition } from '@utils/dom';
 import { FilterType, UpdateType } from '@utils/const';
+import { remove } from '@utils/util';
 
 export default class Filter {
   constructor(filterContainer, filterModel, pointsModel) {
@@ -25,7 +26,7 @@ export default class Filter {
     this._filterComponent.setOnFilterTypeChange(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPosition.BEFORE_END);
       return;
     }
 
@@ -46,7 +47,6 @@ export default class Filter {
   }
 
   _getFilters() {
-
     return [
       {
         type: FilterType.EVERYTHING,

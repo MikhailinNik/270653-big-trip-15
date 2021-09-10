@@ -57,6 +57,8 @@ const getPriceForSort = (firstPrice, secondPrice) => secondPrice.basePrice - fir
 
 const getDifferentDate = (end, start) => dayjs(end).diff(start);
 
+export const sortTimeUp = (pointA, pointB) => new Date(pointA.dateFrom) - new Date(pointB.dateFrom);
+
 export {
   getDurationToMilliseconds,
   formatDate,
@@ -68,5 +70,6 @@ export {
   updateItemById,
   getTimeForSort,
   getPriceForSort,
-  getDifferentDate
+  getDifferentDate,
+  getPointDuration
 };

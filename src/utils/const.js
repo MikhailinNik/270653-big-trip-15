@@ -41,9 +41,9 @@ const UpdateType = {
 };
 
 const FilterType = {
-  EVERYTHING: 'EVERYTHING',
-  FUTURE: 'FUTURE',
-  PAST: 'PAST',
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
 };
 
 export {

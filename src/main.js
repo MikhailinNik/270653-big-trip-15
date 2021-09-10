@@ -1,7 +1,7 @@
 import { points, destinations, pointTypeToOffers } from '@mock/data';
 import { render, RenderPosition } from '@utils/dom';
 import MenuVeiw from '@view/menu';
-import FilterView from '@view/filter';
+// import FilterView from '@view/filter';
 import TripInfoView from '@view/trip-info';
 import PointsModel from '@model/points';
 import FilterModel from '@model/filter';
@@ -28,9 +28,9 @@ const main = document.querySelector('.page-main');
 const mainEvents = main.querySelector('.trip-events');
 
 const filterPresenter = new FilterPresenter(controlsFilters, filterModel, pointsModel);
-filterPresenter.init();
 
 const pointPresenter = new PointListPresenter(mainEvents, pointsModel, filterModel);
+filterPresenter.init();
 pointPresenter.init(destinations, pointTypeToOffers);
 
 

@@ -3,8 +3,9 @@ import PointListView from '@view/point-list';
 import ListEmptyView from '@/view/list-empty';
 import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
-import { remove, getTimeForSort, getPriceForSort } from '@utils/util';
+import { remove, getTimeForSort, getPriceForSort, sortTimeUp } from '@utils/util';
 import { SortType, UserAction, UpdateType, FilterType } from '@utils/const';
+import { filter } from '@utils/filter';
 
 export default class PointList {
   constructor(container, pointsModel, filterModel) {
@@ -37,17 +38,18 @@ export default class PointList {
   }
 
   _getPoints() {
+    const points = this._pointsModel.getPoints();
     this._filterType = this._filterModel.getFilter();
     const filteredPoints = filter[this._filterType](points);
-    
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._pointsModel.getPoints().slice().sort(getTimeForSort);
+        return filteredPoints.sort(getTimeForSort);
       case SortType.PRICE:
-        return this._pointsModel.getPoints().slice().sort(getPriceForSort);
+        return filteredPoints.slice().sort(getPriceForSort);
     }
 
-    return this._pointsModel.getPoints();
+    return filteredPoints.sort(sortTimeUp);
   }
 
   _renderList() {
