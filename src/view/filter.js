@@ -44,13 +44,12 @@ export default class Filter extends AbstractView {
   setOnFilterTypeChange(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement()
-      .querySelector('.trip-filters__filter-input')
       .addEventListener('change', this._onFilterTypeChange);
   }
 
   _onFilterTypeChange(evt) {
     evt.preventDefault();
-
+debugger
     this._callback.filterTypeChange(evt.target.value);
   }
 }
