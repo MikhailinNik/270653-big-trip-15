@@ -1,6 +1,6 @@
 import WaypointView from '@view/waypoint';
 import FormEditView from '@view/form-edit';
-import { render, replace, RenderPosition } from '@utils/dom';
+import { render, replaceItem, RenderPosition } from '@utils/dom';
 import { isEscapeEvent, remove } from '@utils/util';
 import { FormEditMode, UserAction, UpdateType } from '@utils/const';
 
@@ -49,11 +49,11 @@ export default class Waypoint {
     }
 
     if (this._formEdit === FormEditMode.DEFAULT) {
-      replace(this._pointListComponent, this._pointComponent, prevPointComponent);
+      replaceItem(this._pointListComponent, this._pointComponent, prevPointComponent);
     }
 
     if (this._formEdit === FormEditMode.EDITING) {
-      replace(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
+      replaceItem(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
     }
 
     remove(prevPointComponent);
@@ -72,13 +72,13 @@ export default class Waypoint {
   }
 
   _replaceFormToPoint() {
-    replace(this._pointListComponent, this._pointComponent, this._formEditComponent);
+    replaceItem(this._pointListComponent, this._pointComponent, this._formEditComponent);
     this._formEdit = FormEditMode.DEFAULT;
     document.removeEventListener('keydown', this._onEscapeKeyDown);
   }
 
   _replacePointToForm() {
-    replace(this._pointListComponent, this._formEditComponent, this._pointComponent);
+    replaceItem(this._pointListComponent, this._formEditComponent, this._pointComponent);
     this._changeMode();
     this._formEdit = FormEditMode.EDITING;
   }

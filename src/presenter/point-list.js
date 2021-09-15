@@ -5,7 +5,7 @@ import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
 import { remove, getTimeForSort, getPriceForSort, sortTimeUp } from '@utils/util';
 import { SortType, UserAction, UpdateType, FilterType } from '@utils/const';
-import { filter } from '@utils/filter';
+import { filterTypeToPoints } from '@utils/filter';
 
 export default class PointList {
   constructor(container, pointsModel, filterModel) {
@@ -16,13 +16,15 @@ export default class PointList {
 
     this._sortComponent = null;
     this._listComponent = new PointListView();
-    this._noPointsComponent = new ListEmptyView();
+    // this._noPointsComponent = new ListEmptyView();
     this._currentSortType = SortType.DAY;
     this._filterType = FilterType.EVERYTHING;
 
     this._changeData = this._changeData.bind(this);
     this._resetEditMode = this._resetEditMode.bind(this);
     this._handleTypeChange = this._handleTypeChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -40,13 +42,13 @@ export default class PointList {
   _getPoints() {
     const points = this._pointsModel.getPoints();
     this._filterType = this._filterModel.getFilter();
-    const filteredPoints = filter[this._filterType](points);
+    const filteredPoints = filterTypeToPoints[this._filterType](points);
 
     switch (this._currentSortType) {
       case SortType.TIME:
         return filteredPoints.sort(getTimeForSort);
       case SortType.PRICE:
-        return filteredPoints.slice().sort(getPriceForSort);
+        return filteredPoints.sort(getPriceForSort);
     }
 
     return filteredPoints.sort(sortTimeUp);
@@ -63,7 +65,7 @@ export default class PointList {
   }
 
   _renderWaypoints() {
-    const points = this._getPoints().slice();
+    const points = this._getPoints();
     for (const point of points) {
       this._renderWaypoint(point, this._destinations, this._pointTypeToOffers);
     }
@@ -82,7 +84,9 @@ export default class PointList {
   }
 
   _renderNoPoints() {
-    this._getPoints().length === 0
+    this._noPointsComponent = new ListEmptyView(this._filterType);
+debugger
+    this._pointsModel.isEmpty()
       ? render(this._container, this._noPointsComponent, RenderPosition.AFTER_BEGIN)
       : this._renderSort();
   }
@@ -97,10 +101,16 @@ export default class PointList {
   }
 
   _clear({ resetSortType = false } = {}) {
+    // resetSortType
     this._waypointPresenter.forEach((point) => point.destroy());
     this._waypointPresenter.clear();
 
-    remove(this._noPointsComponent);
+    // remove(this._listComponent);
+    // remove(this._sortComponent);
+debugger
+    if (this._noPointsComponent !== null) {
+      remove(this._noPointsComponent);
+    }
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
@@ -131,7 +141,7 @@ export default class PointList {
         this._renderWaypoints();
         break;
       case UpdateType.MAJOR:
-        this._clear();
+        this._clear({ resetSortType: true });
         this._renderWaypoints();
         break;
     }
@@ -141,10 +151,10 @@ export default class PointList {
     if (this._currentSortType === sortType) {
       return;
     }
-
+debugger
     this._currentSortType = sortType;
     this._getPoints();
-    this._clear();
+    this._clear({ resetSortType: true });
     this._renderWaypoints();
   }
 }

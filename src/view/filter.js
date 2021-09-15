@@ -49,7 +49,7 @@ export default class Filter extends AbstractView {
 
   _onFilterTypeChange(evt) {
     evt.preventDefault();
-debugger
+
     this._callback.filterTypeChange(evt.target.value);
   }
 }

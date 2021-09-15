@@ -46,6 +46,12 @@ const FilterType = {
   PAST: 'past',
 };
 
+const listEmptyTypeToText = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.FUTURE]: 'There are no future events now',
+};
+
 export {
   DateFormat,
   KeyboardKey,
@@ -54,5 +60,6 @@ export {
   FormMode,
   UserAction,
   UpdateType,
-  FilterType
+  FilterType,
+  listEmptyTypeToText
 };

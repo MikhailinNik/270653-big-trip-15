@@ -19,7 +19,7 @@ export default class Points extends AbstractObserver {
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting task');
+      throw new Error('Can\'t update unexisting point');
     }
 
     this._points = [
@@ -53,6 +53,10 @@ export default class Points extends AbstractObserver {
     ];
 
     this._notify(updateType);
+  }
+
+  isEmpty() {
+    return this._points.length === 0;
   }
 }
 

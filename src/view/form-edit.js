@@ -174,17 +174,19 @@ export default class FormEdit extends SmartView {
   removeItem() {
     super.removeItem();
 
-    if (this._flatpickerDateFrom && this._flatpickerDateTo) {
+    if (this._flatpickerDateFrom !== null) {
       this._flatpickerDateFrom.destroy();
-      this._flatpickerDateTo.destroy();
-
       this._flatpickerDateFrom = null;
+    }
+
+    if (this._flatpickerDateTo !== null) {
+      this._flatpickerDateTo.destroy();
       this._flatpickerDateTo = null;
     }
   }
 
   _setDateFromPicker() {
-    if(this._flatpickerDateFrom !== null) {
+    if (this._flatpickerDateFrom !== null) {
       this._flatpickerDateFrom.destroy();
       this._flatpickerDateFrom = null;
     }
@@ -221,6 +223,7 @@ export default class FormEdit extends SmartView {
 
   _onRollupButtonClick(evt) {
     evt.preventDefault();
+
     this._callback.click();
   }
 
@@ -253,7 +256,7 @@ export default class FormEdit extends SmartView {
 
   _onDeleteClick(evt) {
     evt.preventDefault();
-debugger
+
     const point = {...this._data};
 
     this._callback.deleteClick(point);
