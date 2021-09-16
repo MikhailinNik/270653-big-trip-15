@@ -12,8 +12,9 @@ const getBlankPoint = () => ({
   basePrice: 50,
   destination: null,
   offers: [],
-  dateFrom: Date.now(),
-  dateTo: Date.now(),
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  isFavourite: false,
 });
 
 export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinations = []) => {
@@ -115,15 +116,8 @@ export const createPointFormTemplate = (data, pointTypeToOffers = {}, destinatio
   </li>`);
 };
 
-
-// см.:
-// https://github.com/htmlacademy-ecmascript/taskmanager-15/blob/master/src/view/task-edit.js#L9-L24
-
-// 1.
-// создать в начале модуля, после import
-
 export default class FormEdit extends SmartView {
-  constructor(point = getBlankPoint(), destinations = [], offers = [], mode = FormMode.EDIT) {
+  constructor(point = getBlankPoint(), destinations = [], offers = {}, mode = FormMode.EDIT) {
     super();
 
     this._data = {
@@ -143,7 +137,6 @@ export default class FormEdit extends SmartView {
     this._onPriceChange = this._onPriceChange.bind(this);
     this._onDateFromChange = this._onDateFromChange.bind(this);
     this._onDateToChange = this._onDateToChange.bind(this);
-    this._onAddButtonClick = this._onAddButtonClick.bind(this);
 
     this._setInnerHandlers();
     this._setDateFromPicker();
@@ -154,28 +147,16 @@ export default class FormEdit extends SmartView {
     return createPointFormTemplate(this._data, this._offers, this._destinations);
   }
 
-  setOnAddClick(callback) {
-    this._callback.addClick = callback;
-
-    // if (this._mode === FormMode.ADD) {
-    document
-      .querySelector('.trip-main__event-add-btn')
-      .addEventListener('click', this._onAddButtonClick);
-    // }
-  }
-
   setOnRollupClick(callback) {
     this._callback.click = callback;
-
-    if (this._mode === FormMode.EDIT) {
-      this.getElement()
-        .querySelector('.event__rollup-btn')
-        .addEventListener('click', this._onRollupButtonClick);
-    }
+    this.getElement()
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this._onRollupButtonClick);
   }
 
   setOnFormSubmit(callback) {
     this._callback.submit = callback;
+
     this.getElement()
       .querySelector('.event--edit')
       .addEventListener('submit', this._onEventEditSubmit);
@@ -183,6 +164,7 @@ export default class FormEdit extends SmartView {
 
   setOnDeleteClick(callback) {
     this._callback.deleteClick = callback;
+
     this.getElement()
       .querySelector('.event__reset-btn')
       .addEventListener('click', this._onDeleteClick);
@@ -193,7 +175,6 @@ export default class FormEdit extends SmartView {
     this._setDateToPicker();
     this._setInnerHandlers();
 
-    this.setOnAddClick(this._callback.addClick);
     this.setOnRollupClick(this._callback.click);
     this.setOnFormSubmit(this._callback.submit);
     this.setOnDeleteClick(this._callback.deleteClick);
@@ -288,14 +269,6 @@ export default class FormEdit extends SmartView {
       .addEventListener('change', this._onPriceChange);
   }
 
-  _onAddButtonClick(evt) {
-    evt.preventDefault();
-
-    FormEdit.parseDataToPoint(this._data);
-    const point = getBlankPoint();
-    this._callback.addClick(point);
-  }
-
   _onRollupButtonClick(evt) {
     evt.preventDefault();
 
@@ -305,7 +278,7 @@ export default class FormEdit extends SmartView {
   _onEventEditSubmit(evt) {
     evt.preventDefault();
 
-    const point = FormEdit.parseDateToPoint(this._data);
+    const point = FormEdit.parseDataToPoint(this._data);
 
     const selectedOfferInputs = this.getElement().querySelectorAll('.event__offer-checkbox:checked');
     point.offers = Array.from(selectedOfferInputs).map(({ name, value }) => ({
@@ -356,11 +329,8 @@ export default class FormEdit extends SmartView {
     }, true);
   }
 
-  // FormEdit.parseDateToPoint(this._data)
   static parseDataToPoint({
-    // renderOffers, // undefined
-    // isEdit,  // undefined
-    ...point // = const point = {...this._data};
+    ...point
   }) {
     return point;
   }

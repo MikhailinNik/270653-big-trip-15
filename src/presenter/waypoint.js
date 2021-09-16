@@ -15,7 +15,6 @@ export default class Waypoint {
     this._formEdit = FormEditMode.DEFAULT;
 
     this._handlePointClick = this._handlePointClick.bind(this);
-    this._handleAddClick = this._handleAddClick.bind(this);
     this._handleFormEditClick = this._handleFormEditClick.bind(this);
     this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -36,8 +35,6 @@ export default class Waypoint {
 
     this._pointComponent.setOnEditClick(this._handlePointClick);
 
-    this._formEditComponent.setOnAddClick(this._handleAddClick);
-
     this._formEditComponent.setOnRollupClick(this._handleFormEditClick);
 
     this._formEditComponent.setOnFormSubmit(this._handleFormEditSubmit);
@@ -57,10 +54,6 @@ export default class Waypoint {
 
     if (this._formEdit === FormEditMode.EDITING) {
       replace(this._formEditComponent, prevFormEditComponent);
-    }
-
-    if (this._formEdit === FormEditMode.ADD) {
-      render(this._pointListComponent, this._formEditComponent, RenderPosition.AFTER_BEGIN);
     }
 
     remove(prevPointComponent);
@@ -88,11 +81,6 @@ export default class Waypoint {
     replace(this._formEditComponent, this._pointComponent);
     this._changeMode();
     this._formEdit = FormEditMode.EDITING;
-  }
-
-  _handleAddClick() {
-    this._formEdit = FormEditMode.ADD;
-    // render(this._pointListComponent, this._formEditComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _handlePointClick() {
