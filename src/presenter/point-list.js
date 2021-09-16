@@ -16,7 +16,6 @@ export default class PointList {
 
     this._sortComponent = null;
     this._listComponent = new PointListView();
-    // this._noPointsComponent = new ListEmptyView();
     this._currentSortType = SortType.DAY;
     this._filterType = FilterType.EVERYTHING;
 
@@ -85,14 +84,12 @@ export default class PointList {
 
   _renderNoPoints() {
     this._noPointsComponent = new ListEmptyView(this._filterType);
-debugger
     this._pointsModel.isEmpty()
       ? render(this._container, this._noPointsComponent, RenderPosition.AFTER_BEGIN)
       : this._renderSort();
   }
 
   _changeData(updatedPoint) {
-  // Вызывать обновление модели
     this._waypointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
@@ -101,13 +98,9 @@ debugger
   }
 
   _clear({ resetSortType = false } = {}) {
-    // resetSortType
     this._waypointPresenter.forEach((point) => point.destroy());
     this._waypointPresenter.clear();
 
-    // remove(this._listComponent);
-    // remove(this._sortComponent);
-debugger
     if (this._noPointsComponent !== null) {
       remove(this._noPointsComponent);
     }
@@ -151,10 +144,9 @@ debugger
     if (this._currentSortType === sortType) {
       return;
     }
-debugger
+
     this._currentSortType = sortType;
-    this._getPoints();
-    this._clear({ resetSortType: true });
+    this._clear({ resetSortType: false });
     this._renderWaypoints();
   }
 }

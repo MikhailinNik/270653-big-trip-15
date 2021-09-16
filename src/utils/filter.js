@@ -1,10 +1,10 @@
 import { FilterType } from '@utils/const';
-import { getDifferentDate } from '@utils/util';
+
+const getFuturePoints = (points, nowDate) => points.filter(({ dateFrom }) => dateFrom > nowDate);
+const getPastPoints = (points, nowDate) => points.filter(({ dateFrom }) => dateFrom < nowDate);
 
 export const filterTypeToPoints = {
   [FilterType.EVERYTHING]: (points) => points.slice(),
-  [FilterType.FUTURE]: (points) => points.filter((point) => getDifferentDate(point.dateFrom, new Date()) >= 0 ||
-  getDifferentDate(point.dateFrom, new Date()) < 0 && getDifferentDate(point.dateTo, new Date() > 0)),
-  [FilterType.PAST]: (points) => points.filter((point) => getDifferentDate(point.dateTo, new Date()) < 0 ||
-  getDifferentDate(point.dateFrom, new Date()) < 0 && getDifferentDate(point.dateTo, new Date()) > 0),
+  [FilterType.FUTURE]: (points) => getFuturePoints(points, Date.now()),
+  [FilterType.PAST]: (points) => getPastPoints(points, Date.now()),
 };

@@ -18,10 +18,11 @@ export const getOffers = (checkedOffers, typeOffers) => {
 export const createPointOfferTemplate = (offers) => offers.map(({ title, price, isChecked = false } = {}, idx) => (
   `<div class="event__offer-selector">
       <input
-      class="event__offer-checkbox  visually-hidden" 
+      class="event__offer-checkbox  visually-hidden"
       id="event-offer-${idx}"
       type="checkbox"
-      name="event-offer-${idx}"
+      name="${title}"
+      value="${price}"
       ${isChecked ? 'checked' : ''}
     >
       <label class="event__offer-label" for="event-offer-${idx}">

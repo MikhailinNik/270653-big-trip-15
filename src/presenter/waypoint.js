@@ -1,6 +1,6 @@
 import WaypointView from '@view/waypoint';
 import FormEditView from '@view/form-edit';
-import { render, replaceItem, RenderPosition } from '@utils/dom';
+import { render, replace, RenderPosition } from '@utils/dom';
 import { isEscapeEvent, remove } from '@utils/util';
 import { FormEditMode, UserAction, UpdateType } from '@utils/const';
 
@@ -15,6 +15,7 @@ export default class Waypoint {
     this._formEdit = FormEditMode.DEFAULT;
 
     this._handlePointClick = this._handlePointClick.bind(this);
+    this._handleAddClick = this._handleAddClick.bind(this);
     this._handleFormEditClick = this._handleFormEditClick.bind(this);
     this._handleFormEditSubmit = this._handleFormEditSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
@@ -35,7 +36,9 @@ export default class Waypoint {
 
     this._pointComponent.setOnEditClick(this._handlePointClick);
 
-    this._formEditComponent.setOnClick(this._handleFormEditClick);
+    this._formEditComponent.setOnAddClick(this._handleAddClick);
+
+    this._formEditComponent.setOnRollupClick(this._handleFormEditClick);
 
     this._formEditComponent.setOnFormSubmit(this._handleFormEditSubmit);
 
@@ -49,11 +52,15 @@ export default class Waypoint {
     }
 
     if (this._formEdit === FormEditMode.DEFAULT) {
-      replaceItem(this._pointListComponent, this._pointComponent, prevPointComponent);
+      replace(this._pointComponent, prevPointComponent);
     }
 
     if (this._formEdit === FormEditMode.EDITING) {
-      replaceItem(this._pointListComponent, this._formEditComponent, prevFormEditComponent);
+      replace(this._formEditComponent, prevFormEditComponent);
+    }
+
+    if (this._formEdit === FormEditMode.ADD) {
+      render(this._pointListComponent, this._formEditComponent, RenderPosition.AFTER_BEGIN);
     }
 
     remove(prevPointComponent);
@@ -72,15 +79,20 @@ export default class Waypoint {
   }
 
   _replaceFormToPoint() {
-    replaceItem(this._pointListComponent, this._pointComponent, this._formEditComponent);
+    replace(this._pointComponent, this._formEditComponent);
     this._formEdit = FormEditMode.DEFAULT;
     document.removeEventListener('keydown', this._onEscapeKeyDown);
   }
 
   _replacePointToForm() {
-    replaceItem(this._pointListComponent, this._formEditComponent, this._pointComponent);
+    replace(this._formEditComponent, this._pointComponent);
     this._changeMode();
     this._formEdit = FormEditMode.EDITING;
+  }
+
+  _handleAddClick() {
+    this._formEdit = FormEditMode.ADD;
+    // render(this._pointListComponent, this._formEditComponent, RenderPosition.AFTER_BEGIN);
   }
 
   _handlePointClick() {
@@ -106,6 +118,7 @@ export default class Waypoint {
       UpdateType.MINOR,
       point,
     );
+
     this._replaceFormToPoint();
   }
 

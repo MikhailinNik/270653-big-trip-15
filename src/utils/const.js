@@ -52,6 +52,11 @@ const listEmptyTypeToText = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
+const ButtonText = {
+  DELETE: 'Delete',
+  CANCEL: 'Cancel',
+};
+
 export {
   DateFormat,
   KeyboardKey,
@@ -61,5 +66,6 @@ export {
   UserAction,
   UpdateType,
   FilterType,
-  listEmptyTypeToText
+  listEmptyTypeToText,
+  ButtonText
 };
