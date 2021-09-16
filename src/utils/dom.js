@@ -31,12 +31,22 @@ const createElement = (template) => {
   return newContainer.firstElementChild;
 };
 
-const replace = (place, secondItem, firstItem) => {
-  if (place instanceof Abstract) {
-    place = place.getElement();
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
   }
 
-  return place.replaceChild(secondItem.getElement(), firstItem.getElement());
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild === null ? null : oldChild.parentElement;
+
+  if (parent === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
 };
 
 export {

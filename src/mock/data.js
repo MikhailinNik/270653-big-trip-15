@@ -60,7 +60,7 @@ const allOffers = [
 
 const points = [
   {
-    basePrice: 110,
+    basePrice: 50,
     dateFrom: new Date('2019-07-10T22:56:56.845Z'),
     dateTo: new Date('2019-07-12T22:58:56.845Z'),
     destination: destinations[0],
@@ -80,11 +80,31 @@ const points = [
     type: 'taxi',
   },
   {
-    basePrice: 900,
+    basePrice: 50,
     dateFrom: new Date('2019-07-10T10:20:56.845Z'),
-    dateTo: new Date('2019-07-15T04:15:56.845Z'),
+    dateTo: new Date('2019-07-11T04:15:56.845Z'),
     destination: destinations[1],
     id: '1',
+    isFavourite: false,
+    offers: [
+      {
+        title: 'Order Uber',
+        price: 30,
+      },
+      {
+        title: 'Add meal',
+        price: 50,
+      },
+    ],
+
+    type: 'taxi',
+  },
+  {
+    basePrice: 150,
+    dateFrom: new Date('2021-09-20T10:20:56.845Z'),
+    dateTo: new Date('2021-09-21T04:15:56.845Z'),
+    destination: destinations[1],
+    id: '3',
     isFavourite: false,
     offers: [
       {

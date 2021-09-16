@@ -18,6 +18,10 @@ const getLeadingZero = (value) => String(value).padStart(2, '0');
 const isEscapeEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }
@@ -51,6 +55,10 @@ const getTimeForSort = (firstPoint, secondPoint) => {
 
 const getPriceForSort = (firstPrice, secondPrice) => secondPrice.basePrice - firstPrice.basePrice;
 
+const getDifferentDate = (end, start) => dayjs(end).diff(start);
+
+export const sortTimeUp = (pointA, pointB) => pointA.dateFrom - pointB.dateFrom;
+
 export {
   getDurationToMilliseconds,
   formatDate,
@@ -61,5 +69,7 @@ export {
   remove,
   updateItemById,
   getTimeForSort,
-  getPriceForSort
+  getPriceForSort,
+  getDifferentDate,
+  getPointDuration
 };
