@@ -24,9 +24,6 @@ export default class PointList {
     this._handleTypeChange = this._handleTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init(destinations, pointTypeToOffers) {
@@ -36,6 +33,19 @@ export default class PointList {
     this._renderList();
     this._renderWaypoints();
     this._renderNoPoints();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy() {
+    this._clear({ resetSortType: true });
+
+    remove(this._taskListComponent);
+    remove(this._boardComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getPoints() {
