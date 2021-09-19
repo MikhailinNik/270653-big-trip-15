@@ -22,13 +22,11 @@ export default class Menu extends AbstractView {
   setOnMenuClick(callback) {
     this._callback.menuClick = callback;
 
-    this.getElement()
-      .querySelector('.trip-tabs__btn')
-      .addEventListener('change', this.onMenuClick);
+    this.getElement().addEventListener('click', this._onMenuClick);
   }
 
   setMenuItem(menuItem) {
-    const items = this.getElement().querySelector('.trip-tabs__btn');
+    const items = this.getElement().querySelectorAll('.trip-tabs__btn');
 
     items.forEach((item) => {
       item.text === menuItem
@@ -40,6 +38,6 @@ export default class Menu extends AbstractView {
   _onMenuClick(evt) {
     evt.preventDefault();
 
-    this.callback.menuClick = evt.target.value;
+    this._callback.menuClick(evt.target.text);
   }
 }

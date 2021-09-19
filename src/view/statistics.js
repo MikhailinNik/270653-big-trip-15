@@ -1,29 +1,52 @@
 import AbstractView from '@view/abstract';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import SmartView from './smart.js';
+import { getCostEventType, getCountEventsType, getSpendTime } from '@utils/statistics.js';
+import { formatDuration } from '@view/waypoint-date.js';
 
-const moneyCtx = document.querySelector('#money');
-const typeCtx = document.querySelector('#type');
-const timeCtx = document.querySelector('#time-spend');
+const TYPES = {
+  MONEY: 'money',
+  COUNT: 'count',
+  TIME: 'time',
+};
 
-// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-const BAR_HEIGHT = 55;
-moneyCtx.height = BAR_HEIGHT * 5;
-typeCtx.height = BAR_HEIGHT * 5;
-timeCtx.height = BAR_HEIGHT * 5;
+const currentTypeToText ={
+  MONEY: 'MONEY',
+  TYPE: 'TYPE',
+  TIME: 'TIME-SPEND',
+};
 
-const renderMoneyChart = (moneyCtx, points) => {
-  const chartData =
-  const { types, prices } = chartData;
+const renderChart = (template, typeData, data, eventTypes) => {
+  let processedData;
+  let currentFormatter;
+  let currentText;
 
-  return new Chart(moneyCtx, {
+  switch (typeData) {
+    case TYPES.MONEY:
+      processedData = eventTypes.map((type) => getCostEventType(data, type));
+      currentFormatter = (value) => `€ ${value}`;
+      currentText = currentTypeToText.MONEY;
+      break;
+    case TYPES.COUNT:
+      processedData = eventTypes.map((type) => getCountEventsType(data, type));
+      (value) => `${value}x`;
+      currentTypeToText.TYPE;
+      break;
+    case TYPES.TIME:
+      processedData = eventTypes.map((type) => getSpendTime(data, type));
+      currentFormatter = (value) => `${formatDuration(value)}`;
+      console.log(currentFormatter);
+      currentText = currentTypeToText.TIME;
+      break;
+  }
+
+  return new Chart(template, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: eventTypes,
       datasets: [{
-        data: [400, 300, 200, 160, 150, 100],
+        data: processedData,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -38,12 +61,12 @@ const renderMoneyChart = (moneyCtx, points) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => '€ ${val}',
+          formatter: currentFormatter,
         },
       },
       title: {
         display: true,
-        text: 'MONEY',
+        text: currentText,
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',
@@ -83,141 +106,6 @@ const renderMoneyChart = (moneyCtx, points) => {
   });
 };
 
-const renderTypeChart = new Chart(typeCtx, {
-  plugins: [ChartDataLabels],
-  type: 'horizontalBar',
-  data: {
-    labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
-    datasets: [{
-      data: [4, 3, 2, 1, 1, 1],
-      backgroundColor: '#ffffff',
-      hoverBackgroundColor: '#ffffff',
-      anchor: 'start',
-    }],
-  },
-  options: {
-    plugins: {
-      datalabels: {
-        font: {
-          size: 13,
-        },
-        color: '#000000',
-        anchor: 'end',
-        align: 'start',
-        formatter: (val) => '${val}x',
-      },
-    },
-    title: {
-      display: true,
-      text: 'TYPE',
-      fontColor: '#000000',
-      fontSize: 23,
-      position: 'left',
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          fontColor: '#000000',
-          padding: 5,
-          fontSize: 13,
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false,
-        },
-        barThickness: 44,
-      }],
-      xAxes: [{
-        ticks: {
-          display: false,
-          beginAtZero: true,
-        },
-        gridLines: {
-          display: false,
-          drawBorder: false,
-        },
-        minBarLength: 50,
-      }],
-    },
-    legend: {
-      display: false,
-    },
-    tooltips: {
-      enabled: false,
-    },
-  },
-});
-
-const renderTimeChart = (timeCtx, points) => {
-  const dataChart = pointsTimeByType(points);
-  const { types, timesType } = dataChart;
-
-  return new Chart(timeCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: types,
-      datasets: [{
-        barThickness: 44,
-        minBarLength: 50,
-        data: timesType,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
-        anchor: 'start',
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (value, context) => `${getDurationFormated(context.chart.data.datasets[0].data[context.dataIndex])}`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'TIME',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
-};
-
 const createStatisticsTemplate = () => (
   `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
@@ -237,24 +125,37 @@ const createStatisticsTemplate = () => (
 );
 
 export default class Statistics extends AbstractView {
-  constructor(points) {
+  constructor(points, eventTypes) {
     super();
 
-    this._points = points;
-
+    this._data = points.slice();
+    this._eventTypes = eventTypes;
 
     this._renderMoneyChart = null;
     this._renderTypeChart = null;
     this._renderTimeChart = null;
+
+    this.init = this.init.bind(this);
+    this.init();
   }
 
   getTemplate() {
     return createStatisticsTemplate();
   }
 
-  setOnStaticsClick(callback) {
-    this._callback.statisticClick = callback;
-    this.getElement()
-      .querySelector('.')
+  init() {
+    const moneyCtx = this.getElement().querySelector('#money');
+    const typeCtx = this.getElement().querySelector('#type');
+    const timeCtx = this.getElement().querySelector('#time-spend');
+
+    const BAR_HEIGHT = 55;
+    moneyCtx.height = BAR_HEIGHT * 5;
+    typeCtx.height = BAR_HEIGHT * 5;
+    timeCtx.height = BAR_HEIGHT * 5;
+
+    this._moneyChart = renderChart(moneyCtx, TYPES.MONEY, this._data, this._eventTypes);
+    this._typeChart = renderChart(typeCtx, TYPES.COUNT, this._data, this._eventTypes);
+    debugger
+    this._timeSpendChart = renderChart(timeCtx, TYPES.TIME, this._data, this._eventTypes);
   }
 }

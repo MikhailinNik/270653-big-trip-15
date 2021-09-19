@@ -41,8 +41,7 @@ export default class PointList {
   destroy() {
     this._clear({ resetSortType: true });
 
-    remove(this._taskListComponent);
-    remove(this._boardComponent);
+    remove(this._listComponent);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);

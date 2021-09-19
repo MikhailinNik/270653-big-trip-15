@@ -10,7 +10,7 @@ const getTypeTemplate = (eventType) => (
   </div>`
 );
 
-const formatDuration = (millisecond) => {
+export const formatDuration = (millisecond) => {
   const { days, hours, minutes } = getDurationToMilliseconds(millisecond);
 
   if (days > 0) {

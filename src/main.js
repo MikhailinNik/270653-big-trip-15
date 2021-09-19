@@ -1,5 +1,7 @@
 import { points, destinations, pointTypeToOffers } from '@mock/data';
-import { render, RenderPosition, remove } from '@utils/dom';
+import { render, RenderPosition } from '@utils/dom';
+import { remove } from '@utils/util';
+import { POINT_TYPES } from '@mock/const';
 import MenuVeiw from '@view/menu';
 import TripInfoView from '@view/trip-info';
 import PointsModel from '@model/points';
@@ -47,9 +49,9 @@ const onMenuClick = (menuItem) => {
     case MenuItem.STATS:
       if(currentMenuItem !== MenuItem.STATS) {
         pointPresenter.destroy();
-        // pointPresenter.renderInfo();
-        statisticsComponent = new StatisticsView(pointsModel.getPoints());
+        statisticsComponent = new StatisticsView(pointsModel.getPoints(), POINT_TYPES);
         render(controlsNavigation, statisticsComponent, RenderPosition.BEFOREEND);
+        statisticsComponent.init();
         currentMenuItem = MenuItem.STATS;
         menuComponent.setMenuItem(MenuItem.STATS);
       }
@@ -57,10 +59,8 @@ const onMenuClick = (menuItem) => {
   }
 };
 
-menuComponent.setOnMenuClick(onMenuClick);
-
 filterPresenter.init();
-// pointPresenter.init(destinations, pointTypeToOffers);
-render(controlsNavigation, statisticsComponent.getElement(), RenderPosition.BEFORE_END);
+pointPresenter.init(destinations, pointTypeToOffers);
+menuComponent.setOnMenuClick(onMenuClick);
 
 
