@@ -1,21 +1,32 @@
-import { sortTimeUp } from '@utils/util';
-import { formatDuration } from '@view/waypoint-date';
+import dayjs from 'dayjs';
 
-const getDurationTime = ({ dateFrom, dateTo }) => dateTo - dateFrom;
+const calculateDuration = ({ dateFrom, dateTo }) => {
+  const date1 = dayjs(dateFrom, 'YYYY-MM-DDTHH:mm:ssZ[Z]');
+  const date2 = dayjs(dateTo, 'YYYY-MM-DDTHH:mm:ssZ[Z]');
 
-const getCostEventType = (events, type) => events.filter((event) => event.type === type)
-  .reduce((sum, event) => sum + event.basePrice, 0);
-
-const getCountEventsType = (events, type) => events.filter((event) => event.type === type).length;
-
-const getSpendTime = (points, type) => {
-
-  points.filter((point) => point.type === type)
-    .reduce((sum, point) => sum + getDurationTime(point), 0);
+  return date2.diff(date1);
 };
 
+const humanizeDuration = (currentDuration) => {
+  if (dayjs.duration(currentDuration).asDays() < 1 && dayjs.duration(currentDuration).asHours() < 1) {
+    return dayjs.duration(currentDuration).format('mm[M]');
+  } else if (dayjs.duration(currentDuration).asDays() < 1) {
+    return dayjs.duration(currentDuration).format('HH[H] mm[M]');
+  }
+
+  return dayjs.duration(currentDuration).format('DD[D] HH[H] mm[M]');
+};
+
+const getCostEventType = (pointEvents, type) => pointEvents.filter((pointEvent) => pointEvent.type === type)
+  .reduce((sum, pointEvent) => sum + pointEvent.basePrice, 0);
+
+const getCountEventsType = (pointEvents, type) => pointEvents.filter((pointEvent) => pointEvent.type === type).length;
+
+const getSpendTime = (events, type) => events.filter((event) => event.type === type)
+  .reduce((sum, event) => sum + calculateDuration(event), 0);
 export {
   getCostEventType,
   getCountEventsType,
-  getSpendTime
+  getSpendTime,
+  humanizeDuration
 };

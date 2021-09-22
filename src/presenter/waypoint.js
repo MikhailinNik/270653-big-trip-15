@@ -5,10 +5,12 @@ import { isEscapeEvent, remove } from '@utils/util';
 import { FormEditMode, UserAction, UpdateType } from '@utils/const';
 
 export default class Waypoint {
-  constructor(pointListComponent, changeData, changeMode) {
+  constructor(pointListComponent, changeData, changeMode, destinationsModel, offersModel) {
     this._pointListComponent = pointListComponent;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
 
     this._pointComponent = null;
     this._formEditComponent = null;
@@ -22,16 +24,14 @@ export default class Waypoint {
     this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
   }
 
-  init(point, destinations, pointTypeToOffers) {
+  init(point) {
     this._point = point;
-    this._destinations = destinations;
-    this._pointTypeToOffers = pointTypeToOffers;
 
     const prevPointComponent = this._pointComponent;
     const prevFormEditComponent = this._formEditComponent;
 
     this._pointComponent = new WaypointView(point);
-    this._formEditComponent = new FormEditView(point, destinations, pointTypeToOffers);
+    this._formEditComponent = new FormEditView(point, this._destinationsModel, this._offersModel);
 
     this._pointComponent.setOnEditClick(this._handlePointClick);
 

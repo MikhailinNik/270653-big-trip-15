@@ -1,10 +1,9 @@
 import AbstractView from '@view/abstract';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getCostEventType, getCountEventsType, getSpendTime } from '@utils/statistics.js';
-import { formatDuration } from '@view/waypoint-date.js';
+import { getCostEventType, getCountEventsType, getSpendTime, humanizeDuration } from '@utils/statistics.js';
 
-const TYPES = {
+const TYPE = {
   MONEY: 'money',
   COUNT: 'count',
   TIME: 'time',
@@ -16,26 +15,27 @@ const currentTypeToText ={
   TIME: 'TIME-SPEND',
 };
 
+const BAR_HEIGHT = 55;
+
 const renderChart = (template, typeData, data, eventTypes) => {
   let processedData;
   let currentFormatter;
   let currentText;
 
   switch (typeData) {
-    case TYPES.MONEY:
+    case TYPE.MONEY:
       processedData = eventTypes.map((type) => getCostEventType(data, type));
       currentFormatter = (value) => `€ ${value}`;
       currentText = currentTypeToText.MONEY;
       break;
-    case TYPES.COUNT:
+    case TYPE.COUNT:
       processedData = eventTypes.map((type) => getCountEventsType(data, type));
-      (value) => `${value}x`;
-      currentTypeToText.TYPE;
+      currentFormatter = (value) => `${value}x`;
+      currentText = currentTypeToText.TYPE;
       break;
-    case TYPES.TIME:
+    case TYPE.TIME:
       processedData = eventTypes.map((type) => getSpendTime(data, type));
-      currentFormatter = (value) => `${formatDuration(value)}`;
-      console.log(currentFormatter);
+      currentFormatter = (value) => `${humanizeDuration(value)}`;
       currentText = currentTypeToText.TIME;
       break;
   }
@@ -131,12 +131,10 @@ export default class Statistics extends AbstractView {
     this._data = points.slice();
     this._eventTypes = eventTypes;
 
-    this._renderMoneyChart = null;
-    this._renderTypeChart = null;
-    this._renderTimeChart = null;
+    this._moneyChart = null;
+    this._typeChart = null;
+    this._timeSpendChart = null;
 
-    this.init = this.init.bind(this);
-    this.init();
   }
 
   getTemplate() {
@@ -144,18 +142,25 @@ export default class Statistics extends AbstractView {
   }
 
   init() {
-    const moneyCtx = this.getElement().querySelector('#money');
-    const typeCtx = this.getElement().querySelector('#type');
-    const timeCtx = this.getElement().querySelector('#time-spend');
+    if (this._moneyChart !== null || this._typeChart !== null || this._timeSpendChart !== null) {
+      this._moneyChart = null;
+      this._typeChart = null;
+      this._timeSpendChart = null;
+    }
 
-    const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 5;
-    typeCtx.height = BAR_HEIGHT * 5;
-    timeCtx.height = BAR_HEIGHT * 5;
+    const template = this.getElement();
 
-    this._moneyChart = renderChart(moneyCtx, TYPES.MONEY, this._data, this._eventTypes);
-    this._typeChart = renderChart(typeCtx, TYPES.COUNT, this._data, this._eventTypes);
-    debugger
-    this._timeSpendChart = renderChart(timeCtx, TYPES.TIME, this._data, this._eventTypes);
+    const moneyCtx = template.querySelector('#money');
+    const typeCtx = template.querySelector('#type');
+    const timeCtx = template.querySelector('#time-spend');
+
+
+    moneyCtx.height = BAR_HEIGHT * this._eventTypes.length;
+    typeCtx.height = BAR_HEIGHT * this._eventTypes.length;
+    timeCtx.height = BAR_HEIGHT * this._eventTypes.length;
+
+    this._moneyChart = renderChart(moneyCtx, TYPE.MONEY, this._data, this._eventTypes);
+    this._typeChart = renderChart(typeCtx, TYPE.COUNT, this._data, this._eventTypes);
+    this._timeChart = renderChart(timeCtx, TYPE.TIME, this._data, this._eventTypes);
   }
 }

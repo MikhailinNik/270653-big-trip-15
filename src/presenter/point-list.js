@@ -1,6 +1,7 @@
 import SortView from '@view/sort';
 import PointListView from '@view/point-list';
 import ListEmptyView from '@/view/list-empty';
+import LoadingView from '@view/lodaing';
 import { render, RenderPosition } from '@utils/dom';
 import WaypointPresenter from '@presenter/waypoint';
 import { remove, getTimeForSort, getPriceForSort, sortTimeUp } from '@utils/util';
@@ -8,16 +9,22 @@ import { SortType, UserAction, UpdateType, FilterType } from '@utils/const';
 import { filterTypeToPoints } from '@utils/filter';
 
 export default class PointList {
-  constructor(container, pointsModel, filterModel) {
+  constructor(container, pointsModel, filterModel, destinationsModel, offersModel, api) {
     this._container = container;
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._waypointPresenter = new Map();
+    this._api = api;
 
     this._sortComponent = null;
     this._listComponent = new PointListView();
     this._currentSortType = SortType.DAY;
     this._filterType = FilterType.EVERYTHING;
+
+    this._isLoading = true;
+    this._loadingComponent = new LoadingView();
 
     this._changeData = this._changeData.bind(this);
     this._resetEditMode = this._resetEditMode.bind(this);
@@ -62,6 +69,28 @@ export default class PointList {
     return filteredPoints.sort(sortTimeUp);
   }
 
+  _renderTripList() {
+    if (this._isLoading && this._pointsModel.getPointsEvent().length === 0) {
+      this._renderLoading();
+      return;
+    }
+
+    const points = this.getPointsEvent();
+    if (points.length > 0) {
+      this._renderSort();
+    } else {
+      this._renderNoPoints();
+    }
+
+    render(this._container, this._listComponent, RenderPosition.BEFOREEND);
+    points.forEach((point) => this._renderEvent(this._listComponent, point));
+  }
+
+  _renderLoading() {
+    render(this._container, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
+
   _renderList() {
     render(this._container, this._listComponent, RenderPosition.BEFORE_END);
   }
@@ -87,7 +116,6 @@ export default class PointList {
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setOnTypeChange(this._handleTypeChange);
 
-    render(this._boardComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
     render(this._container, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
@@ -122,7 +150,9 @@ export default class PointList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updateEvent(update).then((response) => {
+          this._pointsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
@@ -143,7 +173,8 @@ export default class PointList {
         this._renderWaypoints();
         break;
       case UpdateType.MAJOR:
-        this._clear({ resetSortType: true });
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderWaypoints();
         break;
     }

@@ -20,7 +20,7 @@ export default class Menu extends AbstractView {
   }
 
   setOnMenuClick(callback) {
-    this._callback.menuClick = callback;
+    this._callback.getMenuClick = callback;
 
     this.getElement().addEventListener('click', this._onMenuClick);
   }
@@ -37,7 +37,6 @@ export default class Menu extends AbstractView {
 
   _onMenuClick(evt) {
     evt.preventDefault();
-
-    this._callback.menuClick(evt.target.text);
+    this._callback.getMenuClick(evt.target.text);
   }
 }
