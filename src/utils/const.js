@@ -57,6 +57,11 @@ const ButtonText = {
   CANCEL: 'Cancel',
 };
 
+const MenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};
+
 export {
   DateFormat,
   KeyboardKey,
@@ -67,5 +72,6 @@ export {
   UpdateType,
   FilterType,
   listEmptyTypeToText,
-  ButtonText
+  ButtonText,
+  MenuItem
 };
